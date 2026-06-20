@@ -171,12 +171,9 @@ local function IniciarBootSript()
     task.wait(0.4)
     NotificationGui:Destroy()
 
-    -- CHAMADA COMPORTAMENTAL: CHAMA O SEU PAINEL COM A BOLHA FLUTUANTE
-    -- Como seu ui_main.lua antigo criava a tela na hora, vamos puxar os módulos agora.
-    local url_base = "https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/"
-    loadstring(game:HttpGet(url_base .. "sounds.lua"))()
-    loadstring(game:HttpGet(url_base .. "functions.lua"))()
-    loadstring(game:HttpGet(url_base .. "ui_main.lua"))()
+    -- CHAMADA MODULAR COMPATÍVEL COM A BOLHA ESTELAR (Anti-Cache)
+    local versao_nova = "?t=" .. tostring(os.time())
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/ui_main.lua" .. versao_nova))()
 end
 
 -- 4. LOGICA DO BOTÃO VERIFICAR
