@@ -1,259 +1,233 @@
 _G.BK_Engine = _G.BK_Engine or {}
+local _0x1A = game:GetService("TweenService")
+local _0x2B = game:GetService("CoreGui")
+local _0x3C = game:GetService("UserInputService")
+local _0x4D = game:GetService("Players")
+local _0x5E = _0x4D.LocalPlayer
 
-local TweenService = game:GetService("TweenService")
-local CoreGui = game:GetService("CoreGui")
-local UserInputService = game:GetService("UserInputService")
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
-if CoreGui:FindFirstChild("BK_Interface_Oficial") then
-    CoreGui.BK_Interface_Oficial:Destroy()
+if _0x2B:FindFirstChild("BK_Interface_Oficial") then
+    _0x2B.BK_Interface_Oficial:Destroy()
 end
 
-local UI_Main = Instance.new("ScreenGui", CoreGui)
-UI_Main.Name = "BK_Interface_Oficial"
+local _0x6F = Instance.new("ScreenGui", _0x2B)
+_0x6F.Name = "BK_Interface_Oficial"
 
--- FUNÇÃO AUXILIAR PARA SONS SATISFATÓRIOS
-local function EmitirSomClique()
-    local Som = Instance.new("Sound", Workspace)
-    Som.SoundId = "rbxassetid://12221967" -- Som clássico de clique
-    Som.Volume = 0.5
-    Som:Play()
-    game:GetService("Debris"):AddItem(Som, 1)
+local function _0x7A()
+    local s = Instance.new("Sound", workspace)
+    s.SoundId = "rbxassetid://12221967"
+    s.Volume = 0.4
+    s:Play()
+    game:GetService("Debris"):AddItem(s, 1)
 end
 
--- 1. BOLHA FLUTUANTE ESTELAR (Definida puramente como TextButton para o Mobile)
-local Bolha = Instance.new("TextButton", UI_Main)
-Bolha.Name = "BK_Bolha"
-Bolha.Size = UDim2.new(0, 150, 0, 45)
-Bolha.Position = UDim2.new(0.1, 0, 0.2, 0)
-Bolha.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-Bolha.BorderSizePixel = 1
-Bolha.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Bolha.ClipsDescendants = true
-Bolha.Active = true
-Bolha.Text = "" -- Deixa o texto do botão limpo para usar a Label customizada
+local _0x8B = Instance.new("Frame", _0x6F)
+_0x8B.Name = "BK_Bolha"
+_0x8B.Size = UDim2.new(0, 140, 0, 40)
+_0x8B.Position = UDim2.new(0.1, 0, 0.2, 0)
+_0x8B.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+_0x8B.BorderSizePixel = 1
+_0x8B.BorderColor3 = Color3.fromRGB(0, 0, 0)
+_0x8B.ClipsDescendants = true
+_0x8B.Active = true
 
-local EspacoEstelar = Instance.new("Frame", Bolha)
-EspacoEstelar.Size = UDim2.new(1, 0, 1, 0)
-EspacoEstelar.BackgroundTransparency = 1
+local _0x9C = Instance.new("Frame", _0x8B)
+_0x9C.Size = UDim2.new(1, 0, 1, 0)
+_0x9C.BackgroundTransparency = 1
 
-local random = Random.new()
-for i = 1, 15 do
-    local Estrela = Instance.new("TextLabel", EspacoEstelar)
-    Estrela.Text = "."
-    Estrela.Font = Enum.Font.GothamBold
-    Estrela.TextSize = random:NextInteger(8, 14)
-    Estrela.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Estrela.BackgroundTransparency = 1
-    Estrela.Position = UDim2.new(random:NextNumber(0, 1), 0, random:NextNumber(0, 1), 0)
-    Estrela.TextTransparency = random:NextNumber(0.4, 0.8)
+local _0x10D = Random.new()
+for i = 1, 12 do
+    local _e = Instance.new("TextLabel", _0x9C)
+    _e.Text = "."
+    _e.Font = Enum.Font.GothamBold
+    _e.TextSize = _0x10D:NextInteger(8, 12)
+    _e.TextColor3 = Color3.fromRGB(255, 255, 255)
+    _e.BackgroundTransparency = 1
+    _e.Position = UDim2.new(_0x10D:NextNumber(0, 1), 0, _0x10D:NextNumber(0, 1), 0)
+    _e.TextTransparency = _0x10D:NextNumber(0.4, 0.8)
 end
 
--- ANIMAÇÃO DAS ESTRELAS CORRENDO (Loop Infinito Restaurado)
 task.spawn(function()
     while task.wait(0.02) do
-        if not EspacoEstelar or not EspacoEstelar.Parent then break end
-        for _, estrela in pairs(EspacoEstelar:GetChildren()) do
-            if estrela:IsA("TextLabel") then
-                estrela.Position = UDim2.new(estrela.Position.X.Scale - 0.004, 0, estrela.Position.Y.Scale, 0)
-                if estrela.Position.X.Scale < -0.05 then
-                    estrela.Position = UDim2.new(1.05, 0, random:NextNumber(0, 1), 0)
+        if not _0x9C or not _0x9C.Parent then break end
+        for _, v in pairs(_0x9C:GetChildren()) do
+            if v:IsA("TextLabel") then
+                v.Position = UDim2.new(v.Position.X.Scale - 0.003, 0, v.Position.Y.Scale, 0)
+                if v.Position.X.Scale < -0.05 then
+                    v.Position = UDim2.new(1.05, 0, _0x10D:NextNumber(0, 1), 0)
                 end
             end
         end
     end
 end)
 
-local TextoBolha = Instance.new("TextLabel", Bolha)
-TextoBolha.Size = UDim2.new(1, 0, 1, 0)
-TextoBolha.BackgroundTransparency = 1
-TextoBolha.Text = "BK SCRIPTS 🩸"
-TextoBolha.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextoBolha.Font = Enum.Font.GothamBold
-TextoBolha.TextSize = 13
-TextoBolha.ZIndex = 3
+local _0x11E = Instance.new("TextLabel", _0x8B)
+_0x11E.Size = UDim2.new(1, 0, 1, 0)
+_0x11E.BackgroundTransparency = 1
+_0x11E.Text = "BK SCRIPTS 🩸"
+_0x11E.TextColor3 = Color3.fromRGB(240, 240, 240)
+_0x11E.Font = Enum.Font.GothamBold
+_0x11E.TextSize = 12
+_0x11E.ZIndex = 5
 
--- Lógica de arrastar tática sem bugar cliques no Celular
-local dragging, dragInput, dragStart, startPos
-local moveu = false
-
-Bolha.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = Bolha.Position
-        moveu = false
-        
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
+local _dr, _di, _ds, _sp
+local _mv = false
+_0x8B.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        _dr = true _ds = i.Position _sp = _0x8B.Position _mv = false
+    end
+end)
+_0x3C.InputChanged:Connect(function(i)
+    if _dr and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        local d = i.Position - _ds
+        if d.Magnitude > 6 then _mv = true end
+        _0x8B.Position = UDim2.new(_sp.X.Scale, _sp.X.Offset + d.X, _sp.Y.Scale, _sp.Y.Offset + d.Y)
+    end
+end)
+_0x3C.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        _dr = false
     end
 end)
 
-Bolha.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
+local _0x12F = Instance.new("Frame", _0x6F)
+_0x12F.Name = "BK_MenuPrincipal"
+_0x12F.Size = UDim2.new(0, 400, 0, 240)
+_0x12F.Position = UDim2.new(0.5, -200, 0.5, -120)
+_0x12F.BackgroundColor3 = Color3.fromRGB(14, 14, 16)
+_0x12F.BorderSizePixel = 1
+_0x12F.BorderColor3 = Color3.fromRGB(25, 25, 28)
+_0x12F.ClipsDescendants = true
+_0x12F.Visible = false
 
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - dragStart
-        if delta.Magnitude > 8 then -- Margem de segurança para saber se é arrasto ou toque
-            moveu = true
-        end
-        Bolha.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
+local _0x13A = Instance.new("Frame", _0x12F)
+_0x13A.Size = UDim2.new(1, 0, 0, 55)
+_0x13A.BackgroundColor3 = Color3.fromRGB(9, 9, 11)
+_0x13A.BorderSizePixel = 0
 
+local _0x14B = Instance.new("ImageLabel", _0x13A)
+_0x14B.Size = UDim2.new(0, 38, 0, 38)
+_0x14B.Position = UDim2.new(0, 12, 0, 8)
+_0x14B.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+_0x14B.BorderSizePixel = 1
+_0x14B.BorderColor3 = Color3.fromRGB(30, 30, 35)
+_0x14B.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. _0x5E.UserId .. "&width=150&height=150&format=png"
 
--- 2. PAINEL PRINCIPAL QUADRADO CLEAN (Preservado e Idêntico)
-local MainFrame = Instance.new("Frame", UI_Main)
-MainFrame.Name = "BK_MenuPrincipal"
-MainFrame.Size = UDim2.new(0, 0, 0, 0)
-MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
-MainFrame.BorderSizePixel = 1
-MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-MainFrame.ClipsDescendants = true
-MainFrame.Visible = false
+local _0x15C = Instance.new("TextLabel", _0x13A)
+_0x15C.Size = UDim2.new(0, 160, 1, 0)
+_0x15C.Position = UDim2.new(0, 60, 0, 0)
+_0x15C.Text = _0x5E.Name
+_0x15C.TextColor3 = Color3.fromRGB(185, 185, 190)
+_0x15C.Font = Enum.Font.GothamBold
+_0x15C.TextSize = 12
+_0x15C.TextXAlignment = Enum.TextXAlignment.Left
+_0x15C.BackgroundTransparency = 1
 
--- ESTRUTURA DO TOPO (Perfil Fixo + Nome do Script)
-local TopBar = Instance.new("Frame", MainFrame)
-TopBar.Size = UDim2.new(1, 0, 0, 50)
-TopBar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
-TopBar.BorderSizePixel = 0
+local _0x16D = Instance.new("TextLabel", _0x13A)
+_0x16D.Size = UDim2.new(0, 150, 1, 0)
+_0x16D.Position = UDim2.new(1, -165, 0, 0)
+_0x16D.Text = "BK SCRIPTS 🩸"
+_0x16D.TextColor3 = Color3.fromRGB(255, 255, 255)
+_0x16D.Font = Enum.Font.GothamBold
+_0x16D.TextSize = 13
+_0x16D.TextXAlignment = Enum.TextXAlignment.Right
+_0x16D.BackgroundTransparency = 1
 
--- Foto do Jogador
-local FotoJogador = Instance.new("ImageLabel", TopBar)
-FotoJogador.Size = UDim2.new(0, 36, 0, 36)
-FotoJogador.Position = UDim2.new(0, 10, 0, 7)
-FotoJogador.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
-FotoJogador.BorderSizePixel = 1
-FotoJogador.BorderColor3 = Color3.fromRGB(30, 30, 32)
-FotoJogador.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=150&height=150&format=png"
+local _0x17E = Instance.new("ScrollingFrame", _0x12F)
+_0x17E.Size = UDim2.new(1, 0, 0, 35)
+_0x17E.Position = UDim2.new(0, 0, 0, 55)
+_0x17E.BackgroundColor3 = Color3.fromRGB(11, 11, 13)
+_0x17E.BorderSizePixel = 0
+_0x17E.CanvasSize = UDim2.new(1.2, 0, 0, 0)
+_0x17E.ScrollBarThickness = 0
+_0x17E.ScrollingDirection = Enum.ScrollingDirection.Horizontal
 
--- Nome do Jogador
-local NomeJogador = Instance.new("TextLabel", TopBar)
-NomeJogador.Size = UDim2.new(0, 150, 1, 0)
-NomeJogador.Position = UDim2.new(0, 54, 0, 0)
-NomeJogador.Text = LocalPlayer.Name
-NomeJogador.TextColor3 = Color3.fromRGB(200, 200, 200)
-NomeJogador.Font = Enum.Font.GothamBold
-NomeJogador.TextSize = 12
-NomeJogador.TextXAlignment = Enum.TextXAlignment.Left
-NomeJogador.BackgroundTransparency = 1
+local _ly = Instance.new("UIListLayout", _0x17E)
+_ly.FillDirection = Enum.FillDirection.Horizontal
+_ly.SortOrder = Enum.SortOrder.LayoutOrder
+_ly.Padding = UDim.new(0, 1)
 
--- Título BK SCRIPTS
-local TituloMenu = Instance.new("TextLabel", TopBar)
-TituloMenu.Size = UDim2.new(0, 150, 1, 0)
-TituloMenu.Position = UDim2.new(1, -160, 0, 0)
-TituloMenu.Text = "BK SCRIPTS 🩸"
-TituloMenu.TextColor3 = Color3.fromRGB(255, 255, 255)
-TituloMenu.Font = Enum.Font.GothamBold
-TituloMenu.TextSize = 14
-TituloMenu.TextXAlignment = Enum.TextXAlignment.Right
-TituloMenu.BackgroundTransparency = 1
+local _0x18F = Instance.new("Frame", _0x12F)
+_0x18F.Size = UDim2.new(1, -24, 1, -105)
+_0x18F.Position = UDim2.new(0, 12, 0, 105)
+_0x18F.BackgroundTransparency = 1
 
--- SISTEMA DE NAVEGAÇÃO INFERIOR COM DESLIZE HORIZONTAL
-local TabsNavbar = Instance.new("ScrollingFrame", MainFrame)
-TabsNavbar.Size = UDim2.new(1, 0, 0, 35)
-TabsNavbar.Position = UDim2.new(0, 0, 0, 50)
-TabsNavbar.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-TabsNavbar.BorderSizePixel = 0
-TabsNavbar.CanvasSize = UDim2.new(1.5, 0, 0, 0)
-TabsNavbar.ScrollBarThickness = 0
-TabsNavbar.ScrollingDirection = Enum.ScrollingDirection.Horizontal
+local _0x19A = Instance.new("Frame", _0x18F)
+_0x19A.Size = UDim2.new(1, 0, 1, 0)
+_0x19A.BackgroundTransparency = 1
+_0x19A.Visible = true
 
-local UIListLayout = Instance.new("UIListLayout", TabsNavbar)
-UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 2)
+local _0x20B = Instance.new("TextButton", _0x19A)
+_0x20B.Size = UDim2.new(1, 0, 0, 36)
+_0x20B.Position = UDim2.new(0, 0, 0, 8)
+_0x20B.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
+_0x20B.BorderSizePixel = 1
+_0x20B.BorderColor3 = Color3.fromRGB(28, 28, 32)
+_0x20B.Text = "Ligar Sistema de Keys"
+_0x20B.TextColor3 = Color3.fromRGB(225, 225, 225)
+_0x20B.Font = Enum.Font.GothamBold
+_0x20B.TextSize = 11
 
--- CONTÊNER PARA COMPONENTES
-local Container = Instance.new("Frame", MainFrame)
-Container.Size = UDim2.new(1, -20, 1, -95)
-Container.Position = UDim2.new(0, 10, 0, 95)
-Container.BackgroundTransparency = 1
+local _0x21C = Instance.new("TextLabel", _0x19A)
+_0x21C.Size = UDim2.new(1, 0, 0, 36)
+_0x21C.Position = UDim2.new(0, 0, 0, 52)
+_0x21C.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
+_0x21C.BorderSizePixel = 1
+_0x21C.BorderColor3 = Color3.fromRGB(22, 22, 25)
+_0x21C.Text = " Validade da Key: 7 Dias Restantes"
+_0x21C.TextColor3 = Color3.fromRGB(0, 240, 90)
+_0x21C.Font = Enum.Font.Gotham
+_0x21C.TextSize = 11
+_0x21C.TextXAlignment = Enum.TextXAlignment.Left
 
--- ABA 1: CONFIGURAÇÕES
-local AbaConfig = Instance.new("Frame", Container)
-AbaConfig.Size = UDim2.new(1, 0, 1, 0)
-AbaConfig.BackgroundTransparency = 1
-AbaConfig.Visible = true
-
-local BtnLigarKeys = Instance.new("TextButton", AbaConfig)
-BtnLigarKeys.Size = UDim2.new(1, 0, 0, 35)
-BtnLigarKeys.Position = UDim2.new(0, 0, 0, 10)
-BtnLigarKeys.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
-BtnLigarKeys.Text = "Ligar Sistema de Keys"
-BtnLigarKeys.TextColor3 = Color3.fromRGB(230, 230, 230)
-BtnLigarKeys.Font = Enum.Font.GothamBold
-BtnLigarKeys.TextSize = 12
-BtnLigarKeys.BorderSizePixel = 0
-
-local LabelValidade = Instance.new("TextLabel", AbaConfig)
-LabelValidade.Size = UDim2.new(1, 0, 0, 35)
-LabelValidade.Position = UDim2.new(0, 0, 0, 55)
-LabelValidade.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
-LabelValidade.Text = " Validade da Key: 7 Days Restantes"
-LabelValidade.TextColor3 = Color3.fromRGB(0, 255, 100)
-LabelValidade.Font = Enum.Font.Gotham
-LabelValidade.TextSize = 12
-LabelValidade.TextXAlignment = Enum.TextXAlignment.Left
-LabelValidade.BorderSizePixel = 0
-
-BtnLigarKeys.MouseButton1Click:Connect(function()
-    EmitirSomClique()
+_0x20B.MouseButton1Click:Connect(function()
+    _0x7A()
     if delfile then
         delfile("bk_client_token.txt")
-        BtnLigarKeys.Text = "Sistema Resetado! Relogue o Script"
-        BtnLigarKeys.BackgroundColor3 = Color3.fromRGB(130, 20, 30)
+        _0x20B.Text = "Sistema Resetado! Execute Novamente"
+        _0x20B.BackgroundColor3 = Color3.fromRGB(120, 15, 25)
     else
-        BtnLigarKeys.Text = "Não suportado pelo seu Executor"
+        _0x20B.Text = "Executor Sem Suporte a Arquivos"
     end
 end)
 
-local TabBtnConfig = Instance.new("TextButton", TabsNavbar)
-TabBtnConfig.Size = UDim2.new(0, 110, 1, 0)
-TabBtnConfig.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
-TabBtnConfig.Text = "Configurações"
-TabBtnConfig.TextColor3 = Color3.fromRGB(255, 255, 255)
-TabBtnConfig.Font = Enum.Font.GothamBold
-TabBtnConfig.TextSize = 12
-TabBtnConfig.BorderSizePixel = 0
+local _0x22D = Instance.new("TextButton", _0x17E)
+_0x22D.Size = UDim2.new(0, 110, 1, 0)
+_0x22D.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
+_0x22D.Text = "Configurações"
+_0x22D.TextColor3 = Color3.fromRGB(255, 255, 255)
+_0x22D.Font = Enum.Font.GothamBold
+_0x22D.TextSize = 11
+_0x22D.BorderSizePixel = 0
 
-TabBtnConfig.MouseButton1Click:Connect(function()
-    EmitirSomClique()
-    AbaConfig.Visible = true
+_0x22D.MouseButton1Click:Connect(function()
+    _0x7A()
+    _0x19A.Visible = true
 end)
 
--- ========================================================
--- SISTEMA DE ABERTURA DIRETA VIA MOUSEBUTTON1CLICK (Garantido Mobile)
--- ========================================================
-local MenuAberto = false
-
-Bolha.MouseButton1Click:Connect(function()
-    if not moveu then -- Abre o menu apenas se o usuário deu um clique rápido sem arrastar
-        EmitirSomClique()
-        if not MenuAberto then
-            MainFrame.Visible = true
-            MainFrame.Position = UDim2.new(0.5, -210, 0.5, -130)
-            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 420, 0, 260)}):Play()
-            MenuAberto = true
-        else
-            local fechar = TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
-            fechar:Play()
-            fechar.Completed:Connect(function()
-                MainFrame.Visible = false
-            end)
-            MenuAberto = false
+local _op = false
+_0x3C.InputEnded:Connect(function(i, g)
+    if not g and (i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch) then
+        local m = _0x3C:GetMouseLocation()
+        local bP = _0x8B.AbsolutePosition
+        local bS = _0x8B.AbsoluteSize
+        
+        if m.X >= bP.X and m.X <= bP.X + bS.X and m.Y >= bP.Y + 36 and m.Y <= bP.Y + bS.Y + 36 then
+            if not _mv then
+                _0x7A()
+                _op = not _op
+                if _op then
+                    _0x12F.Visible = true
+                    _0x12F.Size = UDim2.new(0, 0, 0, 0)
+                    _0x12F.Position = UDim2.new(0.5, 0, 0.5, 0)
+                    _0x1A:Create(_0x12F, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 240), Position = UDim2.new(0.5, -200, 0.5, -120)}):Play()
+                else
+                    local c = _0x1A:Create(_0x12F, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
+                    c:Play()
+                    c.Completed:Connect(function() _0x12F.Visible = false end)
+                end
+            end
         end
     end
 end)
 
-print("BK SCRIPTS 🩸: Erro de duplicação corrigido com sucesso!")
+print("BK ENGINE: Modulo Ofuscado Carregado.")
