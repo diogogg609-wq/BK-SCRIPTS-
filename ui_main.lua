@@ -14,10 +14,19 @@ end
 local UI_Main = Instance.new("ScreenGui", CoreGui)
 UI_Main.Name = "BK_Interface_Oficial"
 
--- 1. BOLHA FLUTUANTE ESTELAR CLEAN
+-- FUNÇÃO AUXILIAR PARA SONS SATISFATÓRIOS
+local function EmitirSomClique()
+    local Som = Instance.new("Sound", Workspace)
+    Som.SoundId = "rbxassetid://12221967" -- Som clássico e limpo de clique/interface
+    Som.Volume = 0.5
+    Som:Play()
+    game:GetService("Debris"):AddItem(Som, 1)
+end
+
+-- 1. BOLHA FLUTUANTE ESTELAR (Efeito de Estrelas Correndo Restaurado)
 local Bolha = Instance.new("Frame", UI_Main)
 Bolha.Name = "BK_Bolha"
-Bolha.Size = UDim2.new(0, 140, 0, 40)
+Bolha.Size = UDim2.new(0, 150, 0, 45)
 Bolha.Position = UDim2.new(0.1, 0, 0.2, 0)
 Bolha.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
 Bolha.BorderSizePixel = 1
@@ -30,16 +39,31 @@ EspacoEstelar.Size = UDim2.new(1, 0, 1, 0)
 EspacoEstelar.BackgroundTransparency = 1
 
 local random = Random.new()
-for i = 1, 10 do
+for i = 1, 15 do
     local Estrela = Instance.new("TextLabel", EspacoEstelar)
     Estrela.Text = "."
     Estrela.Font = Enum.Font.GothamBold
-    Estrela.TextSize = random:NextInteger(8, 12)
+    Estrela.TextSize = random:NextInteger(8, 14)
     Estrela.TextColor3 = Color3.fromRGB(255, 255, 255)
     Estrela.BackgroundTransparency = 1
     Estrela.Position = UDim2.new(random:NextNumber(0, 1), 0, random:NextNumber(0, 1), 0)
     Estrela.TextTransparency = random:NextNumber(0.4, 0.8)
 end
+
+-- ANIMAÇÃO DAS ESTRELAS CORRENDO (Loop Infinito Otimizado)
+task.spawn(function()
+    while task.wait(0.02) do
+        if not EspacoEstelar or not EspacoEstelar.Parent then break end
+        for _, estrela in pairs(EspacoEstelar:GetChildren()) do
+            if estrela:IsA("TextLabel") then
+                estrela.Position = UDim2.new(estrela.Position.X.Scale - 0.004, 0, estrela.Position.Y.Scale, 0)
+                if estrela.Position.X.Scale < -0.05 then
+                    estrela.Position = UDim2.new(1.05, 0, random:NextNumber(0, 1), 0)
+                end
+            end
+        end
+    end
+end)
 
 local TextoBolha = Instance.new("TextLabel", Bolha)
 TextoBolha.Size = UDim2.new(1, 0, 1, 0)
@@ -47,10 +71,10 @@ TextoBolha.BackgroundTransparency = 1
 TextoBolha.Text = "BK SCRIPTS 🩸"
 TextoBolha.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextoBolha.Font = Enum.Font.GothamBold
-TextoBolha.TextSize = 12
+TextoBolha.TextSize = 13
 TextoBolha.ZIndex = 3
 
--- Arrastar Bolha
+-- Lógica de arrastar sem bugar
 local dragging, dragInput, dragStart, startPos
 Bolha.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -64,102 +88,97 @@ UserInputService.InputChanged:Connect(function(input) if input == dragInput and 
 -- 2. PAINEL PRINCIPAL QUADRADO CLEAN
 local MainFrame = Instance.new("Frame", UI_Main)
 MainFrame.Name = "BK_MenuPrincipal"
-MainFrame.Size = UDim2.new(0, 420, 0, 260)
-MainFrame.Position = UDim2.new(0.5, -210, 0.5, -130)
+MainFrame.Size = UDim2.new(0, 0, 0, 0) -- Começa em 0 para a animação de escala
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
 MainFrame.BorderSizePixel = 1
 MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.ClipsDescendants = true
 MainFrame.Visible = false
 
--- BARRA LATERAL (Menu de Abas)
-local Sidebar = Instance.new("Frame", MainFrame)
-Sidebar.Size = UDim2.new(0, 110, 1, 0)
-Sidebar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
-Sidebar.BorderSizePixel = 0
+-- ========================================================
+-- ESTRUTURA DO TOPO (Perfil + Nome do Script)
+-- ========================================================
+local TopBar = Instance.new("Frame", MainFrame)
+TopBar.Size = UDim2.new(1, 0, 0, 50)
+TopBar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
+TopBar.BorderSizePixel = 0
 
-local BtnPerfilAb = Instance.new("TextButton", Sidebar)
-BtnPerfilAb.Size = UDim2.new(1, 0, 0, 40)
-BtnPerfilAb.Position = UDim2.new(0, 0, 0, 10)
-BtnPerfilAb.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-BtnPerfilAb.Text = "👤 Perfil"
-BtnPerfilAb.TextColor3 = Color3.fromRGB(255, 255, 255)
-BtnPerfilAb.Font = Enum.Font.GothamBold
-BtnPerfilAb.TextSize = 12
-
-local BtnConfigAb = Instance.new("TextButton", Sidebar)
-BtnConfigAb.Size = UDim2.new(1, 0, 0, 40)
-BtnConfigAb.Position = UDim2.new(0, 0, 0, 55)
-BtnConfigAb.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-BtnConfigAb.Text = "⚙️ Configs"
-BtnConfigAb.TextColor3 = Color3.fromRGB(180, 180, 180)
-BtnConfigAb.Font = Enum.Font.GothamBold
-BtnConfigAb.TextSize = 12
-
--- CONTEÚDO DAS ABAS (Lado Direito)
-local Container = Instance.new("Frame", MainFrame)
-Container.Size = UDim2.new(1, -120, 1, -20)
-Container.Position = UDim2.new(0, 120, 0, 10)
-Container.BackgroundTransparency = 1
-
--- ABA PERFIL
-local AbaPerfil = Instance.new("Frame", Container)
-AbaPerfil.Size = UDim2.new(1, 0, 1, 0)
-AbaPerfil.BackgroundTransparency = 1
-AbaPerfil.Visible = true
-
--- Foto Real do Usuário do Roblox
-local FotoJogador = Instance.new("ImageLabel", AbaPerfil)
-FotoJogador.Size = UDim2.new(0, 80, 0, 80)
-FotoJogador.Position = UDim2.new(0, 10, 0, 20)
-FotoJogador.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+-- Foto do Jogador no Topo Superior Esquerdo
+local FotoJogador = Instance.new("ImageLabel", TopBar)
+FotoJogador.Size = UDim2.new(0, 36, 0, 36)
+FotoJogador.Position = UDim2.new(0, 10, 0, 7)
+FotoJogador.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
 FotoJogador.BorderSizePixel = 1
-FotoJogador.BorderColor3 = Color3.fromRGB(40, 40, 40)
--- Puxa o Avatar Thumbnail oficial do jogador logado
+FotoJogador.BorderColor3 = Color3.fromRGB(30, 30, 32)
 FotoJogador.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=150&height=150&format=png"
 
--- Nome do Jogador
-local NomeJogador = Instance.new("TextLabel", AbaPerfil)
-NomeJogador.Size = UDim2.new(1, -110, 0, 30)
-NomeJogador.Position = UDim2.new(0, 105, 0, 30)
-NomeJogador.Text = "Nome: " .. LocalPlayer.Name
-NomeJogador.TextColor3 = Color3.fromRGB(255, 255, 255)
+-- Nome do Jogador ao lado da Foto
+local NomeJogador = Instance.new("TextLabel", TopBar)
+NomeJogador.Size = UDim2.new(0, 150, 1, 0)
+NomeJogador.Position = UDim2.new(0, 54, 0, 0)
+NomeJogador.Text = LocalPlayer.Name
+NomeJogador.TextColor3 = Color3.fromRGB(200, 200, 200)
 NomeJogador.Font = Enum.Font.GothamBold
-NomeJogador.TextSize = 14
+NomeJogador.TextSize = 12
 NomeJogador.TextXAlignment = Enum.TextXAlignment.Left
 NomeJogador.BackgroundTransparency = 1
 
-local CargoJogador = Instance.new("TextLabel", AbaPerfil)
-CargoJogador.Size = UDim2.new(1, -110, 0, 20)
-CargoJogador.Position = UDim2.new(0, 105, 0, 55)
-CargoJogador.Text = "Status: BK Client User"
-CargoJogador.TextColor3 = Color3.fromRGB(255, 0, 50)
-CargoJogador.Font = Enum.Font.Gotham
-CargoJogador.TextSize = 12
-CargoJogador.TextXAlignment = Enum.TextXAlignment.Left
-CargoJogador.BackgroundTransparency = 1
+-- Título BK SCRIPTS no Canto Direito
+local TituloMenu = Instance.new("TextLabel", TopBar)
+TituloMenu.Size = UDim2.new(0, 150, 1, 0)
+TituloMenu.Position = UDim2.new(1, -160, 0, 0)
+TituloMenu.Text = "BK SCRIPTS 🩸"
+TituloMenu.TextColor3 = Color3.fromRGB(255, 255, 255)
+TituloMenu.Font = Enum.Font.GothamBold
+TituloMenu.TextSize = 14
+TituloMenu.TextXAlignment = Enum.TextXAlignment.Right
+TituloMenu.BackgroundTransparency = 1
 
--- ABA CONFIGURAÇÕES
+-- ========================================================
+-- SISTEMA DE NAVEGAÇÃO INFERIOR COM DESLIZE (ScrollingFrame)
+-- ========================================================
+local TabsNavbar = Instance.new("ScrollingFrame", MainFrame)
+TabsNavbar.Size = UDim2.new(1, 0, 0, 35)
+TabsNavbar.Position = UDim2.new(0, 0, 0, 50)
+TabsNavbar.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TabsNavbar.BorderSizePixel = 0
+TabsNavbar.CanvasSize = UDim2.new(1.5, 0, 0, 0) -- Permite deslizar para o lado infinitamente
+TabsNavbar.ScrollBarThickness = 0
+TabsNavbar.ScrollingDirection = Enum.ScrollingDirection.Horizontal
+
+local UIListLayout = Instance.new("UIListLayout", TabsNavbar)
+UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 2)
+
+-- CONTÊNER PARA COMPONENTES DE CONTEÚDO
+local Container = Instance.new("Frame", MainFrame)
+Container.Size = UDim2.new(1, -20, 1, -95)
+Container.Position = UDim2.new(0, 10, 0, 95)
+Container.BackgroundTransparency = 1
+
+-- ABA 1: CONFIGURAÇÕES (Única por enquanto, limpa e funcional)
 local AbaConfig = Instance.new("Frame", Container)
 AbaConfig.Size = UDim2.new(1, 0, 1, 0)
 AbaConfig.BackgroundTransparency = 1
-AbaConfig.Visible = false
+AbaConfig.Visible = true
 
--- Botão Reativar Chaves
+-- Elementos internos da Aba Configurações
 local BtnLigarKeys = Instance.new("TextButton", AbaConfig)
-BtnLigarKeys.Size = UDim2.new(0.9, 0, 0, 35)
-BtnLigarKeys.Position = UDim2.new(0, 10, 0, 20)
-BtnLigarKeys.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+BtnLigarKeys.Size = UDim2.new(1, 0, 0, 35)
+BtnLigarKeys.Position = UDim2.new(0, 0, 0, 10)
+BtnLigarKeys.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
 BtnLigarKeys.Text = "Ligar Sistema de Keys"
-BtnLigarKeys.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnLigarKeys.TextColor3 = Color3.fromRGB(230, 230, 230)
 BtnLigarKeys.Font = Enum.Font.GothamBold
 BtnLigarKeys.TextSize = 12
 BtnLigarKeys.BorderSizePixel = 0
 
--- Validade da Chave
 local LabelValidade = Instance.new("TextLabel", AbaConfig)
-LabelValidade.Size = UDim2.new(0.9, 0, 0, 35)
-LabelValidade.Position = UDim2.new(0, 10, 0, 70)
-LabelValidade.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
+LabelValidade.Size = UDim2.new(1, 0, 0, 35)
+LabelValidade.Position = UDim2.new(0, 0, 0, 55)
+LabelValidade.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
 LabelValidade.Text = " Validade da Key: 7 Dias Restantes"
 LabelValidade.TextColor3 = Color3.fromRGB(0, 255, 100)
 LabelValidade.Font = Enum.Font.Gotham
@@ -167,35 +186,57 @@ LabelValidade.TextSize = 12
 LabelValidade.TextXAlignment = Enum.TextXAlignment.Left
 LabelValidade.BorderSizePixel = 0
 
--- Lógica do botão de ligar as chaves novamente (Deleta o arquivo salvo)
+-- Lógica do Botão de Reiniciar Chaves
 BtnLigarKeys.MouseButton1Click:Connect(function()
+    EmitirSomClique()
     if delfile then
         delfile("bk_client_token.txt")
         BtnLigarKeys.Text = "Sistema Resetado! Relogue o Script"
-        BtnLigarKeys.BackgroundColor3 = Color3.fromRGB(150, 0, 30)
+        BtnLigarKeys.BackgroundColor3 = Color3.fromRGB(130, 20, 30)
     else
-        BtnLigarKeys.Text = "Incompatível com seu Executor"
+        BtnLigarKeys.Text = "Não suportado pelo seu Executor"
     end
 end)
 
--- TROCA DE ABAS
-BtnPerfilAb.MouseButton1Click:Connect(function()
-    AbaPerfil.Visible = true AbaConfig.Visible = false
-    BtnPerfilAb.BackgroundColor3 = Color3.fromRGB(20, 20, 25) BtnConfigAb.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+-- Botão de Navegação da Aba Configurações (Na barra de deslize inferior)
+local TabBtnConfig = Instance.new("TextButton", TabsNavbar)
+TabBtnConfig.Size = UDim2.new(0, 110, 1, 0)
+TabBtnConfig.BackgroundColor3 = Color3.fromRGB(22, 22, 26) -- Marcado ativo por padrão
+TabBtnConfig.Text = "Configurações"
+TabBtnConfig.TextColor3 = Color3.fromRGB(255, 255, 255)
+TabBtnConfig.Font = Enum.Font.GothamBold
+TabBtnConfig.TextSize = 12
+TabBtnConfig.BorderSizePixel = 0
+
+TabBtnConfig.MouseButton1Click:Connect(function()
+    EmitirSomClique()
+    AbaConfig.Visible = true
 end)
 
-BtnConfigAb.MouseButton1Click:Connect(function()
-    AbaPerfil.Visible = false AbaConfig.Visible = true
-    BtnPerfilAb.BackgroundColor3 = Color3.fromRGB(15, 15, 15) BtnConfigAb.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-end)
-
--- LÓGICA DE ABRIR/FECHAR
+-- ========================================================
+-- LÓGICA DE ABRIR/FECHAR DO PAINEL (Com Animações Fluidas)
+-- ========================================================
 local MenuAberto = false
+
 Bolha.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         if dragging == false then
-            MenuAberto = not MenuAberto
-            MainFrame.Visible = MenuAberto
+            EmitirSomClique()
+            if not MenuAberto then
+                MainFrame.Visible = true
+                MainFrame.Position = UDim2.new(0.5, -210, 0.5, -130)
+                TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 420, 0, 260)}):Play()
+                MenuAberto = true
+            else
+                local fechar = TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
+                fechar:Play()
+                fechar.Completed:Connect(function()
+                    MainFrame.Visible = false
+                end)
+                MenuAberto = false
+            end
         end
     end
 end)
+
+print("BK SCRIPTS 🩸: Visual consolidado com topo estruturado!")
