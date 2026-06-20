@@ -1,11 +1,3 @@
--- Caminho base do seu repositório no GitHub
-local url_base = "https://raw.githubusercontent.com/SeuUsuario/BK-Teste-Modular/main/"
-
-print("BK SCRIPTS 🩸: Iniciando carregamento modular...")
-
--- Carrega os módulos na ordem correta
-loadstring(game:HttpGet(url_base .. "sounds.lua"))()
-loadstring(game:HttpGet(url_base .. "functions.lua"))()
-loadstring(game:HttpGet(url_base .. "ui_main.lua"))()
-
-print("BK SCRIPTS 🩸: Todos os módulos carregados com performance máxima!")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/sounds.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/functions.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/ui_main.lua"))()
