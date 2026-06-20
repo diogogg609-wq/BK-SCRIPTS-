@@ -23,9 +23,8 @@ local function EmitirSomClique()
     game:GetService("Debris"):AddItem(Som, 1)
 end
 
--- 1. BOLHA FLUTUANTE ESTELAR
-local Bolha = Instance.new("TextButton", UI_Main) -- Alterado para TextButton para garantir clique preciso no Mobile
-local Bolha = Instance.new("Frame", UI_Main)
+-- 1. BOLHA FLUTUANTE ESTELAR (Definida puramente como TextButton para o Mobile)
+local Bolha = Instance.new("TextButton", UI_Main)
 Bolha.Name = "BK_Bolha"
 Bolha.Size = UDim2.new(0, 150, 0, 45)
 Bolha.Position = UDim2.new(0.1, 0, 0.2, 0)
@@ -34,6 +33,7 @@ Bolha.BorderSizePixel = 1
 Bolha.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Bolha.ClipsDescendants = true
 Bolha.Active = true
+Bolha.Text = "" -- Deixa o texto do botão limpo para usar a Label customizada
 
 local EspacoEstelar = Instance.new("Frame", Bolha)
 EspacoEstelar.Size = UDim2.new(1, 0, 1, 0)
@@ -51,7 +51,7 @@ for i = 1, 15 do
     Estrela.TextTransparency = random:NextNumber(0.4, 0.8)
 end
 
--- ANIMAÇÃO DAS ESTRELAS CORRENDO (Loop Infinito)
+-- ANIMAÇÃO DAS ESTRELAS CORRENDO (Loop Infinito Restaurado)
 task.spawn(function()
     while task.wait(0.02) do
         if not EspacoEstelar or not EspacoEstelar.Parent then break end
@@ -75,16 +75,9 @@ TextoBolha.Font = Enum.Font.GothamBold
 TextoBolha.TextSize = 13
 TextoBolha.ZIndex = 3
 
--- BOTÃO INVISÍVEL DE CLIQUE SUPERPOSTO (Garante detecção de toque sem bugar o arrastar)
-local BotaoClique = Instance.new("TextButton", Bolha)
-BotaoClique.Size = UDim2.new(1, 0, 1, 0)
-BotaoClique.BackgroundTransparency = 1
-BotaoClique.Text = ""
-BotaoClique.ZIndex = 4
-
--- Lógica de arrastar otimizada
+-- Lógica de arrastar tática sem bugar cliques no Celular
 local dragging, dragInput, dragStart, startPos
-local moveu = false -- Nova trava para diferenciar arrastar de clicar
+local moveu = false
 
 Bolha.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -110,14 +103,15 @@ end)
 UserInputService.InputChanged:Connect(function(input)
     if input == dragInput and dragging then
         local delta = input.Position - dragStart
-        if delta.Magnitude > 5 then -- Se mover mais de 5 pixels, o script sabe que você está arrastando
+        if delta.Magnitude > 8 then -- Margem de segurança para saber se é arrasto ou toque
             moveu = true
         end
         Bolha.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
 
--- 2. PAINEL PRINCIPAL QUADRADO CLEAN
+
+-- 2. PAINEL PRINCIPAL QUADRADO CLEAN (Preservado e Idêntico)
 local MainFrame = Instance.new("Frame", UI_Main)
 MainFrame.Name = "BK_MenuPrincipal"
 MainFrame.Size = UDim2.new(0, 0, 0, 0)
@@ -128,7 +122,7 @@ MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.ClipsDescendants = true
 MainFrame.Visible = false
 
--- ESTRUTURA DO TOPO (Perfil + Nome do Script)
+-- ESTRUTURA DO TOPO (Perfil Fixo + Nome do Script)
 local TopBar = Instance.new("Frame", MainFrame)
 TopBar.Size = UDim2.new(1, 0, 0, 50)
 TopBar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
@@ -165,7 +159,7 @@ TituloMenu.TextSize = 14
 TituloMenu.TextXAlignment = Enum.TextXAlignment.Right
 TituloMenu.BackgroundTransparency = 1
 
--- SISTEMA DE NAVEGAÇÃO INFERIOR COM DESLIZE
+-- SISTEMA DE NAVEGAÇÃO INFERIOR COM DESLIZE HORIZONTAL
 local TabsNavbar = Instance.new("ScrollingFrame", MainFrame)
 TabsNavbar.Size = UDim2.new(1, 0, 0, 35)
 TabsNavbar.Position = UDim2.new(0, 0, 0, 50)
@@ -206,7 +200,7 @@ local LabelValidade = Instance.new("TextLabel", AbaConfig)
 LabelValidade.Size = UDim2.new(1, 0, 0, 35)
 LabelValidade.Position = UDim2.new(0, 0, 0, 55)
 LabelValidade.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
-LabelValidade.Text = " Validade da Key: 7 Dias Restantes"
+LabelValidade.Text = " Validade da Key: 7 Days Restantes"
 LabelValidade.TextColor3 = Color3.fromRGB(0, 255, 100)
 LabelValidade.Font = Enum.Font.Gotham
 LabelValidade.TextSize = 12
@@ -239,12 +233,12 @@ TabBtnConfig.MouseButton1Click:Connect(function()
 end)
 
 -- ========================================================
--- SISTEMA DE DETECÇÃO CORRIGIDO (Garante Abertura no Toque)
+-- SISTEMA DE ABERTURA DIRETA VIA MOUSEBUTTON1CLICK (Garantido Mobile)
 -- ========================================================
 local MenuAberto = false
 
-BotaoClique.MouseButton1Click:Connect(function()
-    if not moveu then -- SÓ ABRE SE NÃO TIVER ARRASTADO A BOLHA
+Bolha.MouseButton1Click:Connect(function()
+    if not moveu then -- Abre o menu apenas se o usuário deu um clique rápido sem arrastar
         EmitirSomClique()
         if not MenuAberto then
             MainFrame.Visible = true
@@ -262,4 +256,4 @@ BotaoClique.MouseButton1Click:Connect(function()
     end
 end)
 
-print("BK SCRIPTS 🩸: Correção de clique aplicada. Pronto para o Delta Mobile!")
+print("BK SCRIPTS 🩸: Erro de duplicação corrigido com sucesso!")
