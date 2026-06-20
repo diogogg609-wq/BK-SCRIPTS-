@@ -1,39 +1,39 @@
 _G.BK_Engine = _G.BK_Engine or {}
 
--- CONFIGURAÇÃO DA KEY (Válida por 7 dias simbólicos no código estático)
 local KEY_CORRETA = "FREE-bkclient-2026"
+local NOME_ARQUIVO = "bk_client_token.txt"
 
--- Serviços do Roblox para animações e efeitos
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local Lighting = game:GetService("Lighting")
 
+-- FUNÇÃO PARA VERIFICAR SE O DISPOSITIVO JÁ FOI LEMBRADO
+if isfile and isfile(NOME_ARQUIVO) then
+    local dados = readfile(NOME_ARQUIVO)
+    if dados == "KEY_SALVA_BK_2026" then
+        -- Pula direto para a bolha flutuante!
+        local versao_nova = "?t=" .. tostring(os.time())
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/ui_main.lua" .. versao_nova))()
+        return -- Para o código da key aqui
+    end
+end
+
 -- 1. EFEITO DE DESFOQUE NO FUNDO (Blur)
-local Blur = Instance.new("BlurEffect")
+local Blur = Instance.new("BlurEffect", Lighting)
 Blur.Size = 0
-Blur.Parent = Lighting
-TweenService:Create(Blur, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 20}):Play()
+TweenService:Create(Blur, TweenInfo.new(0.6), {Size = 20}):Play()
 
 -- 2. CRIAÇÃO DA INTERFACE DA KEY
 local ScreenGui = Instance.new("ScreenGui", CoreGui)
 ScreenGui.Name = "BK_KeySystem"
 
--- Painel Central com Cantos Arredondados
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 280, 0, 180)
-MainFrame.Position = UDim2.new(0.5, -140, 0.4, -90)
+MainFrame.Size = UDim2.new(0, 280, 0, 210) -- Aumentado para caber o novo botão
+MainFrame.Position = UDim2.new(0.5, -140, 0.4, -105)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BorderSizePixel = 0
+MainFrame.BorderSizePixel = 1
+MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.ClipsDescendants = true
-
-local Corner = Instance.new("UICorner", MainFrame)
-Corner.CornerRadius = UDim.new(0, 10)
-
--- Linha de detalhe vermelha (Identidade BK)
-local Line = Instance.new("Frame", MainFrame)
-Line.Size = UDim2.new(1, 0, 0, 3)
-Line.BackgroundColor3 = Color3.fromRGB(255, 0, 50)
-Line.BorderSizePixel = 0
 
 -- Título Principal
 local Titulo = Instance.new("TextLabel", MainFrame)
@@ -58,7 +58,7 @@ Subtitulo.BackgroundTransparency = 1
 -- Caixa de Texto para digitar/colar a Key
 local TextBox = Instance.new("TextBox", MainFrame)
 TextBox.Size = UDim2.new(0.85, 0, 0, 35)
-TextBox.Position = UDim2.new(0.075, 0, 0, 75)
+TextBox.Position = UDim2.new(0.075, 0, 0, 70)
 TextBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 TextBox.Text = ""
 TextBox.PlaceholderText = "Colar Key aqui..."
@@ -66,134 +66,134 @@ TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
 TextBox.Font = Enum.Font.Gotham
 TextBox.TextSize = 12
+TextBox.BorderSizePixel = 0
 
-local BoxCorner = Instance.new("UICorner", TextBox)
-BoxCorner.CornerRadius = UDim.new(0, 6)
+-- Botão de Lembrar Dispositivo (Quadrado e tático)
+local LembrarAtivo = false
+local BtnLembrar = Instance.new("TextButton", MainFrame)
+BtnLembrar.Size = UDim2.new(0.85, 0, 0, 25)
+BtnLembrar.Position = UDim2.new(0.075, 0, 0, 115)
+BtnLembrar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+BtnLembrar.Text = "[ ] Lembrar Dispositivo"
+BtnLembrar.TextColor3 = Color3.fromRGB(180, 180, 180)
+BtnLembrar.Font = Enum.Font.Gotham
+BtnLembrar.TextSize = 11
+BtnLembrar.BorderSizePixel = 0
 
 -- Botão de Verificar
 local BtnVerificar = Instance.new("TextButton", MainFrame)
 BtnVerificar.Size = UDim2.new(0.85, 0, 0, 35)
-BtnVerificar.Position = UDim2.new(0.075, 0, 0, 125)
-BtnVerificar.BackgroundColor3 = Color3.fromRGB(255, 0, 50)
+BtnVerificar.Position = UDim2.new(0.075, 0, 0, 155)
+BtnVerificar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 BtnVerificar.Text = "Verificar Chave"
 BtnVerificar.TextColor3 = Color3.fromRGB(255, 255, 255)
 BtnVerificar.Font = Enum.Font.GothamBold
 BtnVerificar.TextSize = 14
+BtnVerificar.BorderSizePixel = 0
 
-local BtnCorner = Instance.new("UICorner", BtnVerificar)
-BtnCorner.CornerRadius = UDim.new(0, 6)
+-- POPUP DE TERMOS DO DISPOSITIVO (Fica invisível até clicar)
+local PopupFrame = Instance.new("Frame", ScreenGui)
+PopupFrame.Size = UDim2.new(0, 320, 0, 240)
+PopupFrame.Position = UDim2.new(0.5, -160, 0.5, -120)
+PopupFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+PopupFrame.BorderSizePixel = 1
+PopupFrame.BorderColor3 = Color3.fromRGB(255, 0, 50)
+PopupFrame.Visible = false
+PopupFrame.ZIndex = 5
 
--- ANIMAÇÃO DE ENTRADA DO PAINEL (Fade-in com subida suave)
-MainFrame.Position = UDim2.new(0.5, -140, 0.5, -90)
-MainFrame.BackgroundTransparency = 1
-Titulo.TextTransparency = 1
-Subtitulo.TextTransparency = 1
-TextBox.BackgroundTransparency = 1
-TextBox.TextTransparency = 1
-BtnVerificar.BackgroundTransparency = 1
-BtnVerificar.TextTransparency = 1
+local PopupTexto = Instance.new("TextLabel", PopupFrame)
+PopupTexto.Size = UDim2.new(0.9, 0, 0, 150)
+PopupTexto.Position = UDim2.new(0, 15, 0, 15)
+PopupTexto.Text = "Ativando isto você fará que quando executar a script novamente ela não irá iniciar o sistema de key ele mostrará irá pular está etapa mais os dias da Key estarão contatos mesmo assim caso queria adicionar o sistema de keys novamente nas configurações do script você poderá ativa-lá novamente pois temos atualizações de 7 a 7 dias e a Key é resetada sempre meses dias"
+PopupTexto.TextColor3 = Color3.fromRGB(200, 200, 200)
+PopupTexto.Font = Enum.Font.Gotham
+PopupTexto.TextSize = 11
+PopupTexto.TextWrapped = true
+PopupTexto.TextXAlignment = Enum.TextXAlignment.Left
+PopupTexto.BackgroundTransparency = 1
+PopupTexto.ZIndex = 5
 
-TweenService:Create(MainFrame, TweenInfo.new(0.5), {BackgroundTransparency = 0, Position = UDim2.new(0.5, -140, 0.4, -90)}):Play()
-TweenService:Create(Titulo, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-TweenService:Create(Subtitulo, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-TweenService:Create(TextBox, TweenInfo.new(0.5), {BackgroundTransparency = 0, TextTransparency = 0}):Play()
-TweenService:Create(BtnVerificar, TweenInfo.new(0.5), {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+local BtnConcordar = Instance.new("TextButton", PopupFrame)
+BtnConcordar.Size = UDim2.new(0.4, 0, 0, 35)
+BtnConcordar.Position = UDim2.new(0.08, 0, 0, 180)
+BtnConcordar.BackgroundColor3 = Color3.fromRGB(0, 150, 70)
+BtnConcordar.Text = "Concordar"
+BtnConcordar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnConcordar.Font = Enum.Font.GothamBold
+BtnConcordar.ZIndex = 5
 
--- 3. FUNÇÃO DE CARREGAMENTO DO SCRIPT (O BOOT)
+local BtnDiscordar = Instance.new("TextButton", PopupFrame)
+BtnDiscordar.Size = UDim2.new(0.4, 0, 0, 35)
+BtnDiscordar.Position = UDim2.new(0.52, 0, 0, 180)
+BtnDiscordar.BackgroundColor3 = Color3.fromRGB(150, 0, 30)
+BtnDiscordar.Text = "Discordar"
+BtnDiscordar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnDiscordar.Font = Enum.Font.GothamBold
+BtnDiscordar.ZIndex = 5
+
+-- LÓGICA DO POPUP
+BtnLembrar.MouseButton1Click:Connect(function()
+    PopupFrame.Visible = true
+end)
+
+BtnConcordar.MouseButton1Click:Connect(function()
+    LembrarAtivo = true
+    BtnLembrar.Text = "[X] Dispositivo Lembrado"
+    BtnLembrar.TextColor3 = Color3.fromRGB(0, 255, 100)
+    PopupFrame.Visible = false
+end)
+
+BtnDiscordar.MouseButton1Click:Connect(function()
+    LembrarAtivo = false
+    BtnLembrar.Text = "[ ] Lembrar Dispositivo"
+    BtnLembrar.TextColor3 = Color3.fromRGB(180, 180, 180)
+    PopupFrame.Visible = false
+end)
+
+-- BOOT DE CARREGAMENTO
 local function IniciarBootSript()
-    -- Limpa o design interno para rodar os comandos de carregamento
-    Titulo:Destroy()
-    Subtitulo:Destroy()
-    TextBox:Destroy()
-    BtnVerificar:Destroy()
-    
-    -- Altera o tamanho do quadrado para o modo "Console de Comandos"
-    TweenService:Create(MainFrame, TweenInfo.new(0.4), {Size = UDim2.new(0, 250, 0, 120)}):Play()
+    Titulo:Destroy() Subtitulo:Destroy() TextBox:Destroy() BtnLembrar:Destroy() BtnVerificar:Destroy()
+    TweenService:Create(MainFrame, TweenInfo.new(0.4), {Size = UDim2.new(0, 250, 0, 100)}):Play()
     
     local LogLabel = Instance.new("TextLabel", MainFrame)
-    LogLabel.Size = UDim2.new(0.9, 0, 0, 80)
+    LogLabel.Size = UDim2.new(0.9, 0, 0, 70)
     LogLabel.Position = UDim2.new(0.05, 0, 0.15, 0)
     LogLabel.BackgroundTransparency = 1
-    LogLabel.TextColor3 = Color3.fromRGB(0, 255, 100) -- Letras verdes estilo hacker/dev
+    LogLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
     LogLabel.Font = Enum.Font.Code
-    LogLabel.TextSize = 12
+    LogLabel.TextSize = 11
     LogLabel.TextXAlignment = Enum.TextXAlignment.Left
-    LogLabel.TextYAlignment = Enum.TextYAlignment.Top
     LogLabel.TextWrapped = true
     
-    -- Simulação de linhas executando
-    LogLabel.Text = "> Inicializando BK Client...\n"
-    task.wait(0.6)
-    LogLabel.Text = LogLabel.Text .. "> Carregando script bypass...\n"
-    task.wait(0.8)
-    LogLabel.Text = LogLabel.Text .. "> Injetando modulos na memoria...\n"
-    task.wait(0.5)
-    LogLabel.Text = LogLabel.Text .. "> Sistema Pronto!"
-    task.wait(0.6)
+    LogLabel.Text = "> Verificando Chave...\n" task.wait(0.5)
+    LogLabel.Text = LogLabel.Text .. "> Carregando script bypass...\n" task.wait(0.6)
+    LogLabel.Text = LogLabel.Text .. "> Sistema Pronto!" task.wait(0.5)
     
-    -- Desfoca e some com o painel de Key e remove o borrão do mapa
+    -- Se o usuário marcou para Lembrar, cria o arquivo local no celular
+    if LembrarAtivo and writefile then
+        writefile(NOME_ARQUIVO, "KEY_SALVA_BK_2026")
+    end
+    
     TweenService:Create(MainFrame, TweenInfo.new(0.4), {Size = UDim2.new(0,0,0,0), BackgroundTransparency = 1}):Play()
-    TweenService:Create(LogLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
     TweenService:Create(Blur, TweenInfo.new(0.4), {Size = 0}):Play()
     task.wait(0.4)
+    ScreenGui:Destroy() Blur:Destroy()
     
-    ScreenGui:Destroy()
-    Blur:Destroy()
-    
-    -- NOTIFICAÇÃO POPUP FINAL
-    local NotificationGui = Instance.new("ScreenGui", CoreGui)
-    local NotifFrame = Instance.new("Frame", NotificationGui)
-    NotifFrame.Size = UDim2.new(0, 180, 0, 40)
-    NotifFrame.Position = UDim2.new(0.5, -90, -0.1, 0) -- Começa fora da tela (no topo)
-    NotifFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    NotifFrame.BorderSizePixel = 0
-    Instance.new("UICorner", NotifFrame).CornerRadius = UDim.new(0, 6)
-    
-    local NotifLine = Instance.new("Frame", NotifFrame)
-    NotifLine.Size = UDim2.new(0, 4, 1, 0)
-    NotifLine.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
-    NotifLine.BorderSizePixel = 0
-    
-    local NotifText = Instance.new("TextLabel", NotifFrame)
-    NotifText.Size = UDim2.new(1, -10, 1, 0)
-    NotifText.Position = UDim2.new(0, 10, 0, 0)
-    NotifText.Text = "Sistema pronto!"
-    NotifText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NotifText.Font = Enum.Font.GothamBold
-    NotifText.TextSize = 13
-    NotifText.BackgroundTransparency = 1
-    NotifText.TextXAlignment = Enum.TextXAlignment.Left
-    
-    -- Animação do popup descendo e sumindo
-    TweenService:Create(NotifFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -90, 0.05, 0)}):Play()
-    task.wait(2.5)
-    TweenService:Create(NotifFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -90, -0.1, 0)}):Play()
-    task.wait(0.4)
-    NotificationGui:Destroy()
-
-    -- CHAMADA MODULAR COMPATÍVEL COM A BOLHA ESTELAR (Anti-Cache)
     local versao_nova = "?t=" .. tostring(os.time())
     loadstring(game:HttpGet("https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/ui_main.lua" .. versao_nova))()
 end
 
--- 4. LOGICA DO BOTÃO VERIFICAR
 BtnVerificar.MouseButton1Click:Connect(function()
     if TextBox.Text == KEY_CORRETA then
-        -- ANIMAÇÃO VERDE DE SUCESSO
         BtnVerificar.Text = "Key Autorizada!"
-        TweenService:Create(BtnVerificar, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(0, 180, 80)}):Play()
-        TweenService:Create(Line, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(0, 180, 80)}):Play()
-        task.wait(1.2)
-        
-        -- Inicia o processo de Boot e esconde a tela de Key
+        BtnVerificar.BackgroundColor3 = Color3.fromRGB(0, 180, 80)
+        task.wait(1)
         IniciarBootSript()
     else
-        -- ANIMAÇÃO VERMELHA DE ERRO (Pisca)
-        local CorOriginal = BtnVerificar.BackgroundColor3
         BtnVerificar.Text = "Chave Incorreta!"
         BtnVerificar.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-        task.wait(1.5)
+        task.wait(1)
         BtnVerificar.Text = "Verificar Chave"
-        BtnVerificar.BackgroundColor3 = CorOriginal
+        BtnVerificar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     end
 end)
