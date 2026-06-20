@@ -17,13 +17,14 @@ UI_Main.Name = "BK_Interface_Oficial"
 -- FUNÇÃO AUXILIAR PARA SONS SATISFATÓRIOS
 local function EmitirSomClique()
     local Som = Instance.new("Sound", Workspace)
-    Som.SoundId = "rbxassetid://12221967" -- Som clássico e limpo de clique/interface
+    Som.SoundId = "rbxassetid://12221967" -- Som clássico de clique
     Som.Volume = 0.5
     Som:Play()
     game:GetService("Debris"):AddItem(Som, 1)
 end
 
--- 1. BOLHA FLUTUANTE ESTELAR (Efeito de Estrelas Correndo Restaurado)
+-- 1. BOLHA FLUTUANTE ESTELAR
+local Bolha = Instance.new("TextButton", UI_Main) -- Alterado para TextButton para garantir clique preciso no Mobile
 local Bolha = Instance.new("Frame", UI_Main)
 Bolha.Name = "BK_Bolha"
 Bolha.Size = UDim2.new(0, 150, 0, 45)
@@ -50,7 +51,7 @@ for i = 1, 15 do
     Estrela.TextTransparency = random:NextNumber(0.4, 0.8)
 end
 
--- ANIMAÇÃO DAS ESTRELAS CORRENDO (Loop Infinito Otimizado)
+-- ANIMAÇÃO DAS ESTRELAS CORRENDO (Loop Infinito)
 task.spawn(function()
     while task.wait(0.02) do
         if not EspacoEstelar or not EspacoEstelar.Parent then break end
@@ -74,21 +75,52 @@ TextoBolha.Font = Enum.Font.GothamBold
 TextoBolha.TextSize = 13
 TextoBolha.ZIndex = 3
 
--- Lógica de arrastar sem bugar
+-- BOTÃO INVISÍVEL DE CLIQUE SUPERPOSTO (Garante detecção de toque sem bugar o arrastar)
+local BotaoClique = Instance.new("TextButton", Bolha)
+BotaoClique.Size = UDim2.new(1, 0, 1, 0)
+BotaoClique.BackgroundTransparency = 1
+BotaoClique.Text = ""
+BotaoClique.ZIndex = 4
+
+-- Lógica de arrastar otimizada
 local dragging, dragInput, dragStart, startPos
+local moveu = false -- Nova trava para diferenciar arrastar de clicar
+
 Bolha.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true dragStart = input.Position startPos = Bolha.Position
-        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
+        dragging = true
+        dragStart = input.Position
+        startPos = Bolha.Position
+        moveu = false
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
     end
 end)
-Bolha.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end end)
-UserInputService.InputChanged:Connect(function(input) if input == dragInput and dragging then local delta = input.Position - dragStart Bolha.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y) end end)
+
+Bolha.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        if delta.Magnitude > 5 then -- Se mover mais de 5 pixels, o script sabe que você está arrastando
+            moveu = true
+        end
+        Bolha.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
 
 -- 2. PAINEL PRINCIPAL QUADRADO CLEAN
 local MainFrame = Instance.new("Frame", UI_Main)
 MainFrame.Name = "BK_MenuPrincipal"
-MainFrame.Size = UDim2.new(0, 0, 0, 0) -- Começa em 0 para a animação de escala
+MainFrame.Size = UDim2.new(0, 0, 0, 0)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
 MainFrame.BorderSizePixel = 1
@@ -96,15 +128,13 @@ MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.ClipsDescendants = true
 MainFrame.Visible = false
 
--- ========================================================
 -- ESTRUTURA DO TOPO (Perfil + Nome do Script)
--- ========================================================
 local TopBar = Instance.new("Frame", MainFrame)
 TopBar.Size = UDim2.new(1, 0, 0, 50)
 TopBar.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
 TopBar.BorderSizePixel = 0
 
--- Foto do Jogador no Topo Superior Esquerdo
+-- Foto do Jogador
 local FotoJogador = Instance.new("ImageLabel", TopBar)
 FotoJogador.Size = UDim2.new(0, 36, 0, 36)
 FotoJogador.Position = UDim2.new(0, 10, 0, 7)
@@ -113,7 +143,7 @@ FotoJogador.BorderSizePixel = 1
 FotoJogador.BorderColor3 = Color3.fromRGB(30, 30, 32)
 FotoJogador.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=150&height=150&format=png"
 
--- Nome do Jogador ao lado da Foto
+-- Nome do Jogador
 local NomeJogador = Instance.new("TextLabel", TopBar)
 NomeJogador.Size = UDim2.new(0, 150, 1, 0)
 NomeJogador.Position = UDim2.new(0, 54, 0, 0)
@@ -124,7 +154,7 @@ NomeJogador.TextSize = 12
 NomeJogador.TextXAlignment = Enum.TextXAlignment.Left
 NomeJogador.BackgroundTransparency = 1
 
--- Título BK SCRIPTS no Canto Direito
+-- Título BK SCRIPTS
 local TituloMenu = Instance.new("TextLabel", TopBar)
 TituloMenu.Size = UDim2.new(0, 150, 1, 0)
 TituloMenu.Position = UDim2.new(1, -160, 0, 0)
@@ -135,15 +165,13 @@ TituloMenu.TextSize = 14
 TituloMenu.TextXAlignment = Enum.TextXAlignment.Right
 TituloMenu.BackgroundTransparency = 1
 
--- ========================================================
--- SISTEMA DE NAVEGAÇÃO INFERIOR COM DESLIZE (ScrollingFrame)
--- ========================================================
+-- SISTEMA DE NAVEGAÇÃO INFERIOR COM DESLIZE
 local TabsNavbar = Instance.new("ScrollingFrame", MainFrame)
 TabsNavbar.Size = UDim2.new(1, 0, 0, 35)
 TabsNavbar.Position = UDim2.new(0, 0, 0, 50)
 TabsNavbar.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 TabsNavbar.BorderSizePixel = 0
-TabsNavbar.CanvasSize = UDim2.new(1.5, 0, 0, 0) -- Permite deslizar para o lado infinitamente
+TabsNavbar.CanvasSize = UDim2.new(1.5, 0, 0, 0)
 TabsNavbar.ScrollBarThickness = 0
 TabsNavbar.ScrollingDirection = Enum.ScrollingDirection.Horizontal
 
@@ -152,19 +180,18 @@ UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 2)
 
--- CONTÊNER PARA COMPONENTES DE CONTEÚDO
+-- CONTÊNER PARA COMPONENTES
 local Container = Instance.new("Frame", MainFrame)
 Container.Size = UDim2.new(1, -20, 1, -95)
 Container.Position = UDim2.new(0, 10, 0, 95)
 Container.BackgroundTransparency = 1
 
--- ABA 1: CONFIGURAÇÕES (Única por enquanto, limpa e funcional)
+-- ABA 1: CONFIGURAÇÕES
 local AbaConfig = Instance.new("Frame", Container)
 AbaConfig.Size = UDim2.new(1, 0, 1, 0)
 AbaConfig.BackgroundTransparency = 1
 AbaConfig.Visible = true
 
--- Elementos internos da Aba Configurações
 local BtnLigarKeys = Instance.new("TextButton", AbaConfig)
 BtnLigarKeys.Size = UDim2.new(1, 0, 0, 35)
 BtnLigarKeys.Position = UDim2.new(0, 0, 0, 10)
@@ -186,7 +213,6 @@ LabelValidade.TextSize = 12
 LabelValidade.TextXAlignment = Enum.TextXAlignment.Left
 LabelValidade.BorderSizePixel = 0
 
--- Lógica do Botão de Reiniciar Chaves
 BtnLigarKeys.MouseButton1Click:Connect(function()
     EmitirSomClique()
     if delfile then
@@ -198,10 +224,9 @@ BtnLigarKeys.MouseButton1Click:Connect(function()
     end
 end)
 
--- Botão de Navegação da Aba Configurações (Na barra de deslize inferior)
 local TabBtnConfig = Instance.new("TextButton", TabsNavbar)
 TabBtnConfig.Size = UDim2.new(0, 110, 1, 0)
-TabBtnConfig.BackgroundColor3 = Color3.fromRGB(22, 22, 26) -- Marcado ativo por padrão
+TabBtnConfig.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
 TabBtnConfig.Text = "Configurações"
 TabBtnConfig.TextColor3 = Color3.fromRGB(255, 255, 255)
 TabBtnConfig.Font = Enum.Font.GothamBold
@@ -214,29 +239,27 @@ TabBtnConfig.MouseButton1Click:Connect(function()
 end)
 
 -- ========================================================
--- LÓGICA DE ABRIR/FECHAR DO PAINEL (Com Animações Fluidas)
+-- SISTEMA DE DETECÇÃO CORRIGIDO (Garante Abertura no Toque)
 -- ========================================================
 local MenuAberto = false
 
-Bolha.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        if dragging == false then
-            EmitirSomClique()
-            if not MenuAberto then
-                MainFrame.Visible = true
-                MainFrame.Position = UDim2.new(0.5, -210, 0.5, -130)
-                TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 420, 0, 260)}):Play()
-                MenuAberto = true
-            else
-                local fechar = TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
-                fechar:Play()
-                fechar.Completed:Connect(function()
-                    MainFrame.Visible = false
-                end)
-                MenuAberto = false
-            end
+BotaoClique.MouseButton1Click:Connect(function()
+    if not moveu then -- SÓ ABRE SE NÃO TIVER ARRASTADO A BOLHA
+        EmitirSomClique()
+        if not MenuAberto then
+            MainFrame.Visible = true
+            MainFrame.Position = UDim2.new(0.5, -210, 0.5, -130)
+            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 420, 0, 260)}):Play()
+            MenuAberto = true
+        else
+            local fechar = TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
+            fechar:Play()
+            fechar.Completed:Connect(function()
+                MainFrame.Visible = false
+            end)
+            MenuAberto = false
         end
     end
 end)
 
-print("BK SCRIPTS 🩸: Visual consolidado com topo estruturado!")
+print("BK SCRIPTS 🩸: Correção de clique aplicada. Pronto para o Delta Mobile!")
