@@ -1,233 +1,267 @@
 _G.BK_Engine = _G.BK_Engine or {}
-local _0x1A = game:GetService("TweenService")
-local _0x2B = game:GetService("CoreGui")
-local _0x3C = game:GetService("UserInputService")
-local _0x4D = game:GetService("Players")
-local _0x5E = _0x4D.LocalPlayer
+local _0xAE1 = game:GetService("TweenService")
+local _0xBF2 = game:GetService("CoreGui")
+local _0xCG3 = game:GetService("UserInputService")
+local _0xDH4 = game:GetService("Players")
+local _0xEI5 = _0xDH4.LocalPlayer
 
-if _0x2B:FindFirstChild("BK_Interface_Oficial") then
-    _0x2B.BK_Interface_Oficial:Destroy()
+if _0xBF2:FindFirstChild("BK_Interface_Oficial") then
+    _0xBF2.BK_Interface_Oficial:Destroy()
 end
 
-local _0x6F = Instance.new("ScreenGui", _0x2B)
-_0x6F.Name = "BK_Interface_Oficial"
+local _0xFI6 = Instance.new("ScreenGui", _0xBF2)
+_0xFI6.Name = "BK_Interface_Oficial"
 
-local function _0x7A()
+local function _0xSND(_0xID)
     local s = Instance.new("Sound", workspace)
-    s.SoundId = "rbxassetid://12221967"
-    s.Volume = 0.4
+    s.SoundId = "rbxassetid://" .. tostring(_0xID)
+    s.Volume = 0.5
     s:Play()
     game:GetService("Debris"):AddItem(s, 1)
 end
 
-local _0x8B = Instance.new("Frame", _0x6F)
-_0x8B.Name = "BK_Bolha"
-_0x8B.Size = UDim2.new(0, 140, 0, 40)
-_0x8B.Position = UDim2.new(0.1, 0, 0.2, 0)
-_0x8B.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-_0x8B.BorderSizePixel = 1
-_0x8B.BorderColor3 = Color3.fromRGB(0, 0, 0)
-_0x8B.ClipsDescendants = true
-_0x8B.Active = true
+local function _0xNOT(_0xTX1, _0xTX2)
+    local nF = Instance.new("Frame", _0xFI6)
+    nF.Size = UDim2.new(0, 220, 0, 50)
+    nF.Position = UDim2.new(1, 30, 0, 20)
+    nF.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+    nF.BorderSizePixel = 1
+    nF.BorderColor3 = Color3.fromRGB(35, 35, 40)
+    
+    local t1 = Instance.new("TextLabel", nF)
+    t1.Size = UDim2.new(1, -20, 0, 20)
+    t1.Position = UDim2.new(0, 10, 0, 5)
+    t1.Text = _0xTX1
+    t1.TextColor3 = Color3.fromRGB(255, 255, 255)
+    t1.Font = Enum.Font.GothamBold
+    t1.TextSize = 12
+    t1.TextXAlignment = Enum.TextXAlignment.Left
+    t1.BackgroundTransparency = 1
+    
+    local t2 = Instance.new("TextLabel", nF)
+    t2.Size = UDim2.new(1, -20, 0, 20)
+    t2.Position = UDim2.new(0, 10, 0, 22)
+    t2.Text = _0xTX2
+    t2.TextColor3 = Color3.fromRGB(150, 150, 150)
+    t2.Font = Enum.Font.Gotham
+    t2.TextSize = 11
+    t2.TextXAlignment = Enum.TextXAlignment.Left
+    t2.BackgroundTransparency = 1
 
-local _0x9C = Instance.new("Frame", _0x8B)
-_0x9C.Size = UDim2.new(1, 0, 1, 0)
-_0x9C.BackgroundTransparency = 1
+    _0xAE1:Create(nF, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(1, -240, 0, 20)}):Play()
+    _0xSND(6518427327)
+    
+    task.delay(3, function()
+        local go = _0xAE1:Create(nF, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(1, 30, 0, 20)})
+        go:Play()
+        go.Completed:Connect(function() nF:Destroy() end)
+    end)
+end
 
-local _0x10D = Random.new()
-for i = 1, 12 do
-    local _e = Instance.new("TextLabel", _0x9C)
-    _e.Text = "."
-    _e.Font = Enum.Font.GothamBold
-    _e.TextSize = _0x10D:NextInteger(8, 12)
-    _e.TextColor3 = Color3.fromRGB(255, 255, 255)
-    _e.BackgroundTransparency = 1
-    _e.Position = UDim2.new(_0x10D:NextNumber(0, 1), 0, _0x10D:NextNumber(0, 1), 0)
-    _e.TextTransparency = _0x10D:NextNumber(0.4, 0.8)
+local _0xG7 = Instance.new("ImageButton", _0xFI6)
+_0xG7.Name = "BK_Bolha"
+_0xG7.Size = UDim2.new(0, 130, 0, 36)
+_0xG7.Position = UDim2.new(0.1, 0, 0.2, 0)
+_0xG7.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
+_0xG7.BorderSizePixel = 1
+_0xG7.BorderColor3 = Color3.fromRGB(40, 40, 45)
+_0xG7.ClipsDescendants = true
+_0xG7.Active = true
+_0xG7.AutoButtonColor = false
+
+local _0xH8 = Instance.new("Frame", _0xG7)
+_0xH8.Size = UDim2.new(1, 0, 1, 0)
+_0xH8.BackgroundTransparency = 1
+
+local _0xRND = Random.new()
+for i = 1, 10 do
+    local st = Instance.new("TextLabel", _0xH8)
+    st.Text = "."
+    st.Font = Enum.Font.GothamBold
+    st.TextSize = _0xRND:NextInteger(8, 12)
+    st.TextColor3 = Color3.fromRGB(255, 255, 255)
+    st.BackgroundTransparency = 1
+    st.Position = UDim2.new(_0xRND:NextNumber(0, 1), 0, _0xRND:NextNumber(0, 1), 0)
+    st.TextTransparency = _0xRND:NextNumber(0.5, 0.8)
 end
 
 task.spawn(function()
-    while task.wait(0.02) do
-        if not _0x9C or not _0x9C.Parent then break end
-        for _, v in pairs(_0x9C:GetChildren()) do
+    while task.wait(0.03) do
+        if not _0xH8 or not _0xH8.Parent then break end
+        for _, v in pairs(_0xH8:GetChildren()) do
             if v:IsA("TextLabel") then
                 v.Position = UDim2.new(v.Position.X.Scale - 0.003, 0, v.Position.Y.Scale, 0)
                 if v.Position.X.Scale < -0.05 then
-                    v.Position = UDim2.new(1.05, 0, _0x10D:NextNumber(0, 1), 0)
+                    v.Position = UDim2.new(1.05, 0, _0xRND:NextNumber(0, 1), 0)
                 end
             end
         end
     end
 end)
 
-local _0x11E = Instance.new("TextLabel", _0x8B)
-_0x11E.Size = UDim2.new(1, 0, 1, 0)
-_0x11E.BackgroundTransparency = 1
-_0x11E.Text = "BK SCRIPTS 🩸"
-_0x11E.TextColor3 = Color3.fromRGB(240, 240, 240)
-_0x11E.Font = Enum.Font.GothamBold
-_0x11E.TextSize = 12
-_0x11E.ZIndex = 5
+local _0xI9 = Instance.new("TextLabel", _0xG7)
+_0xI9.Size = UDim2.new(1, 0, 1, 0)
+_0xI9.BackgroundTransparency = 1
+_0xI9.Text = "BK SCRIPTS 🩸"
+_0xI9.TextColor3 = Color3.fromRGB(245, 245, 245)
+_0xI9.Font = Enum.Font.GothamBold
+_0xI9.TextSize = 11
+_0xI9.ZIndex = 5
 
 local _dr, _di, _ds, _sp
 local _mv = false
-_0x8B.InputBegan:Connect(function(i)
+
+_0xG7.InputBegan:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-        _dr = true _ds = i.Position _sp = _0x8B.Position _mv = false
+        _dr = true _ds = i.Position _sp = _0xG7.Position _mv = false
     end
 end)
-_0x3C.InputChanged:Connect(function(i)
+
+_0xCG3.InputChanged:Connect(function(i)
     if _dr and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
         local d = i.Position - _ds
-        if d.Magnitude > 6 then _mv = true end
-        _0x8B.Position = UDim2.new(_sp.X.Scale, _sp.X.Offset + d.X, _sp.Y.Scale, _sp.Y.Offset + d.Y)
+        if d.Magnitude > 10 then _mv = true end
+        _0xG7.Position = UDim2.new(_sp.X.Scale, _sp.X.Offset + d.X, _sp.Y.Scale, _sp.Y.Offset + d.Y)
     end
 end)
-_0x3C.InputEnded:Connect(function(i)
+
+_0xCG3.InputEnded:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
         _dr = false
     end
 end)
 
-local _0x12F = Instance.new("Frame", _0x6F)
-_0x12F.Name = "BK_MenuPrincipal"
-_0x12F.Size = UDim2.new(0, 400, 0, 240)
-_0x12F.Position = UDim2.new(0.5, -200, 0.5, -120)
-_0x12F.BackgroundColor3 = Color3.fromRGB(14, 14, 16)
-_0x12F.BorderSizePixel = 1
-_0x12F.BorderColor3 = Color3.fromRGB(25, 25, 28)
-_0x12F.ClipsDescendants = true
-_0x12F.Visible = false
+local _0xJA10 = Instance.new("Frame", _0xFI6)
+_0xJA10.Name = "BK_MenuPrincipal"
+_0xJA10.Size = UDim2.new(0, 0, 0, 0)
+_0xJA10.Position = UDim2.new(0.5, 0, 0.5, 0)
+_0xJA10.BackgroundColor3 = Color3.fromRGB(11, 11, 13)
+_0xJA10.BorderSizePixel = 1
+_0xJA10.BorderColor3 = Color3.fromRGB(22, 22, 25)
+_0xJA10.ClipsDescendants = true
+_0xJA10.Visible = false
 
-local _0x13A = Instance.new("Frame", _0x12F)
-_0x13A.Size = UDim2.new(1, 0, 0, 55)
-_0x13A.BackgroundColor3 = Color3.fromRGB(9, 9, 11)
-_0x13A.BorderSizePixel = 0
+local _0xKB11 = Instance.new("Frame", _0xJA10)
+_0xKB11.Size = UDim2.new(1, 0, 0, 50)
+_0xKB11.BackgroundColor3 = Color3.fromRGB(7, 7, 9)
+_0xKB11.BorderSizePixel = 0
 
-local _0x14B = Instance.new("ImageLabel", _0x13A)
-_0x14B.Size = UDim2.new(0, 38, 0, 38)
-_0x14B.Position = UDim2.new(0, 12, 0, 8)
-_0x14B.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
-_0x14B.BorderSizePixel = 1
-_0x14B.BorderColor3 = Color3.fromRGB(30, 30, 35)
-_0x14B.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. _0x5E.UserId .. "&width=150&height=150&format=png"
+local _0xLC12 = Instance.new("ImageLabel", _0xKB11)
+_0xLC12.Size = UDim2.new(0, 34, 0, 34)
+_0xLC12.Position = UDim2.new(0, 12, 0, 8)
+_0xLC12.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+_0xLC12.BorderSizePixel = 1
+_0xLC12.BorderColor3 = Color3.fromRGB(28, 28, 32)
+_0xLC12.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. _0xEI5.UserId .. "&width=150&height=150&format=png"
 
-local _0x15C = Instance.new("TextLabel", _0x13A)
-_0x15C.Size = UDim2.new(0, 160, 1, 0)
-_0x15C.Position = UDim2.new(0, 60, 0, 0)
-_0x15C.Text = _0x5E.Name
-_0x15C.TextColor3 = Color3.fromRGB(185, 185, 190)
-_0x15C.Font = Enum.Font.GothamBold
-_0x15C.TextSize = 12
-_0x15C.TextXAlignment = Enum.TextXAlignment.Left
-_0x15C.BackgroundTransparency = 1
+local _0xMD13 = Instance.new("TextLabel", _0xKB11)
+_0xMD13.Size = UDim2.new(0, 140, 1, 0)
+_0xMD13.Position = UDim2.new(0, 54, 0, 0)
+_0xMD13.Text = _0xEI5.Name
+_0xMD13.TextColor3 = Color3.fromRGB(170, 170, 175)
+_0xMD13.Font = Enum.Font.GothamBold
+_0xMD13.TextSize = 12
+_0xMD13.TextXAlignment = Enum.TextXAlignment.Left
+_0xMD13.BackgroundTransparency = 1
 
-local _0x16D = Instance.new("TextLabel", _0x13A)
-_0x16D.Size = UDim2.new(0, 150, 1, 0)
-_0x16D.Position = UDim2.new(1, -165, 0, 0)
-_0x16D.Text = "BK SCRIPTS 🩸"
-_0x16D.TextColor3 = Color3.fromRGB(255, 255, 255)
-_0x16D.Font = Enum.Font.GothamBold
-_0x16D.TextSize = 13
-_0x16D.TextXAlignment = Enum.TextXAlignment.Right
-_0x16D.BackgroundTransparency = 1
+local _0xNE14 = Instance.new("TextLabel", _0xKB11)
+_0xNE14.Size = UDim2.new(0, 150, 1, 0)
+_0xNE14.Position = UDim2.new(1, -162, 0, 0)
+_0xNE14.Text = "BK SCRIPTS 🩸"
+_0xNE14.TextColor3 = Color3.fromRGB(255, 255, 255)
+_0xNE14.Font = Enum.Font.GothamBold
+_0xNE14.TextSize = 13
+_0xNE14.TextXAlignment = Enum.TextXAlignment.Right
+_0xNE14.BackgroundTransparency = 1
 
-local _0x17E = Instance.new("ScrollingFrame", _0x12F)
-_0x17E.Size = UDim2.new(1, 0, 0, 35)
-_0x17E.Position = UDim2.new(0, 0, 0, 55)
-_0x17E.BackgroundColor3 = Color3.fromRGB(11, 11, 13)
-_0x17E.BorderSizePixel = 0
-_0x17E.CanvasSize = UDim2.new(1.2, 0, 0, 0)
-_0x17E.ScrollBarThickness = 0
-_0x17E.ScrollingDirection = Enum.ScrollingDirection.Horizontal
+local _0xOF15 = Instance.new("ScrollingFrame", _0xJA10)
+_0xOF15.Size = UDim2.new(1, 0, 0, 32)
+_0xOF15.Position = UDim2.new(0, 0, 0, 50)
+_0xOF15.BackgroundColor3 = Color3.fromRGB(9, 9, 11)
+_0xOF15.BorderSizePixel = 0
+_0xOF15.CanvasSize = UDim2.new(1.3, 0, 0, 0)
+_0xOF15.ScrollBarThickness = 0
+_0xOF15.ScrollingDirection = Enum.ScrollingDirection.Horizontal
 
-local _ly = Instance.new("UIListLayout", _0x17E)
+local _ly = Instance.new("UIListLayout", _0xOF15)
 _ly.FillDirection = Enum.FillDirection.Horizontal
 _ly.SortOrder = Enum.SortOrder.LayoutOrder
 _ly.Padding = UDim.new(0, 1)
 
-local _0x18F = Instance.new("Frame", _0x12F)
-_0x18F.Size = UDim2.new(1, -24, 1, -105)
-_0x18F.Position = UDim2.new(0, 12, 0, 105)
-_0x18F.BackgroundTransparency = 1
+local _0xPG16 = Instance.new("Frame", _0xJA10)
+_0xPG16.Size = UDim2.new(1, -24, 1, -98)
+_0xPG16.Position = UDim2.new(0, 12, 0, 98)
+_0xPG16.BackgroundTransparency = 1
 
-local _0x19A = Instance.new("Frame", _0x18F)
-_0x19A.Size = UDim2.new(1, 0, 1, 0)
-_0x19A.BackgroundTransparency = 1
-_0x19A.Visible = true
+local _0xQH17 = Instance.new("Frame", _0xPG16)
+_0xQH17.Size = UDim2.new(1, 0, 1, 0)
+_0xQH17.BackgroundTransparency = 1
+_0xQH17.Visible = true
 
-local _0x20B = Instance.new("TextButton", _0x19A)
-_0x20B.Size = UDim2.new(1, 0, 0, 36)
-_0x20B.Position = UDim2.new(0, 0, 0, 8)
-_0x20B.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
-_0x20B.BorderSizePixel = 1
-_0x20B.BorderColor3 = Color3.fromRGB(28, 28, 32)
-_0x20B.Text = "Ligar Sistema de Keys"
-_0x20B.TextColor3 = Color3.fromRGB(225, 225, 225)
-_0x20B.Font = Enum.Font.GothamBold
-_0x20B.TextSize = 11
+local _0xRI18 = Instance.new("TextButton", _0xQH17)
+_0xRI18.Size = UDim2.new(1, 0, 0, 36)
+_0xRI18.Position = UDim2.new(0, 0, 0, 10)
+_0xRI18.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
+_0xRI18.BorderSizePixel = 1
+_0xRI18.BorderColor3 = Color3.fromRGB(28, 28, 32)
+_0xRI18.Text = "Ligar Sistema de Keys"
+_0xRI18.TextColor3 = Color3.fromRGB(230, 230, 230)
+_0xRI18.Font = Enum.Font.GothamBold
+_0xRI18.TextSize = 11
 
-local _0x21C = Instance.new("TextLabel", _0x19A)
-_0x21C.Size = UDim2.new(1, 0, 0, 36)
-_0x21C.Position = UDim2.new(0, 0, 0, 52)
-_0x21C.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
-_0x21C.BorderSizePixel = 1
-_0x21C.BorderColor3 = Color3.fromRGB(22, 22, 25)
-_0x21C.Text = " Validade da Key: 7 Dias Restantes"
-_0x21C.TextColor3 = Color3.fromRGB(0, 240, 90)
-_0x21C.Font = Enum.Font.Gotham
-_0x21C.TextSize = 11
-_0x21C.TextXAlignment = Enum.TextXAlignment.Left
+local _0xSJ19 = Instance.new("TextLabel", _0xQH17)
+_0xSJ19.Size = UDim2.new(1, 0, 0, 36)
+_0xSJ19.Position = UDim2.new(0, 0, 0, 54)
+_0xSJ19.BackgroundColor3 = Color3.fromRGB(13, 13, 15)
+_0xSJ19.BorderSizePixel = 1
+_0xSJ19.BorderColor3 = Color3.fromRGB(22, 22, 25)
+_0xSJ19.Text = " Validade da Key: 7 Dias Restantes"
+_0xSJ19.TextColor3 = Color3.fromRGB(0, 235, 90)
+_0xSJ19.Font = Enum.Font.Gotham
+_0xSJ19.TextSize = 11
+_0xSJ19.TextXAlignment = Enum.TextXAlignment.Left
 
-_0x20B.MouseButton1Click:Connect(function()
-    _0x7A()
+_0xRI18.MouseButton1Click:Connect(function()
+    _0xSND(12221967)
     if delfile then
         delfile("bk_client_token.txt")
-        _0x20B.Text = "Sistema Resetado! Execute Novamente"
-        _0x20B.BackgroundColor3 = Color3.fromRGB(120, 15, 25)
+        _0xRI18.Text = "Sistema Resetado! Execute Novamente"
+        _0xRI18.BackgroundColor3 = Color3.fromRGB(110, 15, 25)
     else
-        _0x20B.Text = "Executor Sem Suporte a Arquivos"
+        _0xRI18.Text = "Executor Sem Suporte a Arquivos"
     end
 end)
 
-local _0x22D = Instance.new("TextButton", _0x17E)
-_0x22D.Size = UDim2.new(0, 110, 1, 0)
-_0x22D.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
-_0x22D.Text = "Configurações"
-_0x22D.TextColor3 = Color3.fromRGB(255, 255, 255)
-_0x22D.Font = Enum.Font.GothamBold
-_0x22D.TextSize = 11
-_0x22D.BorderSizePixel = 0
+local _0xTK20 = Instance.new("TextButton", _0xOF15)
+_0xTK20.Size = UDim2.new(0, 110, 1, 0)
+_0xTK20.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
+_0xTK20.Text = "Configurações"
+_0xTK20.TextColor3 = Color3.fromRGB(255, 255, 255)
+_0xTK20.Font = Enum.Font.GothamBold
+_0xTK20.TextSize = 11
+_0xTK20.BorderSizePixel = 0
 
-_0x22D.MouseButton1Click:Connect(function()
-    _0x7A()
-    _0x19A.Visible = true
+_0xTK20.MouseButton1Click:Connect(function()
+    _0xSND(12221967)
+    _0xQH17.Visible = true
 end)
 
 local _op = false
-_0x3C.InputEnded:Connect(function(i, g)
-    if not g and (i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch) then
-        local m = _0x3C:GetMouseLocation()
-        local bP = _0x8B.AbsolutePosition
-        local bS = _0x8B.AbsoluteSize
-        
-        if m.X >= bP.X and m.X <= bP.X + bS.X and m.Y >= bP.Y + 36 and m.Y <= bP.Y + bS.Y + 36 then
-            if not _mv then
-                _0x7A()
-                _op = not _op
-                if _op then
-                    _0x12F.Visible = true
-                    _0x12F.Size = UDim2.new(0, 0, 0, 0)
-                    _0x12F.Position = UDim2.new(0.5, 0, 0.5, 0)
-                    _0x1A:Create(_0x12F, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 240), Position = UDim2.new(0.5, -200, 0.5, -120)}):Play()
-                else
-                    local c = _0x1A:Create(_0x12F, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
-                    c:Play()
-                    c.Completed:Connect(function() _0x12F.Visible = false end)
-                end
-            end
+_0xG7.Activated:Connect(function()
+    if not _mv then
+        _0xSND(12221967)
+        _op = not _op
+        if _op then
+            _0xJA10.Visible = true
+            _0xJA10.Size = UDim2.new(0, 0, 0, 0)
+            _0xJA10.Position = UDim2.new(0.5, 0, 0.5, 0)
+            _0xAE1:Create(_0xJA10, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 390, 0, 230), Position = UDim2.new(0.5, -195, 0.5, -115)}):Play()
+        else
+            local c = _0xAE1:Create(_0xJA10, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
+            c:Play()
+            c.Completed:Connect(function() _0xJA10.Visible = false end)
         end
     end
 end)
 
-print("BK ENGINE: Modulo Ofuscado Carregado.")
+_0xNOT("BK CLIENT", "Módulo Premium Inicializado!")
