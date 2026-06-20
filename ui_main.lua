@@ -12,15 +12,14 @@ end
 local UI_Main = Instance.new("ScreenGui", CoreGui)
 UI_Main.Name = "BK_Interface_Oficial"
 
--- 1. CRIAÇÃO DA BOLHA FLUTUANTE (Formato de Cápsula com bordas quadradas/angulares)
+-- 1. CRIAÇÃO DA BOLHA FLUTUANTE (Quadrada, Sem Borda Colorida Poluída)
 local Bolha = Instance.new("Frame", UI_Main)
 Bolha.Name = "BK_Bolha"
 Bolha.Size = UDim2.new(0, 150, 0, 45)
-Bolha.Position = UDim2.new(0.1, 0, 0.2, 0) -- Posição inicial no canto da tela
--- Cor de fundo escura e profunda
+Bolha.Position = UDim2.new(0.1, 0, 0.2, 0)
 Bolha.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-Bolha.BorderSizePixel = 2
-Bolha.BorderColor3 = Color3.fromRGB(255, 0, 50) -- Borda vermelha marcante
+Bolha.BorderSizePixel = 1
+Bolha.BorderColor3 = Color3.fromRGB(0, 0, 0) -- Borda preta discreta que se funde com o jogo
 Bolha.ClipsDescendants = true
 Bolha.Active = true
 
@@ -29,7 +28,6 @@ local EspacoEstelar = Instance.new("Frame", Bolha)
 EspacoEstelar.Size = UDim2.new(1, 0, 1, 0)
 EspacoEstelar.BackgroundTransparency = 1
 
--- Gerador de Estrelas leves em posições aleatórias
 local random = Random.new()
 for i = 1, 15 do
     local Estrela = Instance.new("TextLabel", EspacoEstelar)
@@ -39,27 +37,23 @@ for i = 1, 15 do
     Estrela.TextColor3 = Color3.fromRGB(255, 255, 255)
     Estrela.BackgroundTransparency = 1
     Estrela.Position = UDim2.new(random:NextNumber(0, 1), 0, random:NextNumber(0, 1), 0)
-    Estrela.TextTransparency = random:NextNumber(0.3, 0.8)
+    Estrela.TextTransparency = random:NextNumber(0.4, 0.8) -- Estrelas mais suaves para não poluir
     
-    -- Animação individual de piscar para cada estrela
     task.spawn(function()
         while task.wait(random:NextNumber(0.5, 2)) do
             if not Estrela or not Estrela.Parent then break end
-            local brilho = TweenService:Create(Estrela, TweenInfo.new(0.5), {TextTransparency = random:NextNumber(0.1, 0.9)})
+            local brilho = TweenService:Create(Estrela, TweenInfo.new(0.5), {TextTransparency = random:NextNumber(0.2, 0.9)})
             brilho:Play()
         end
     end)
 end
 
--- Movimento lento do espaço de fundo para dar efeito estelar correndo
 task.spawn(function()
     while task.wait(0.05) do
         if not EspacoEstelar or not EspacoEstelar.Parent then break end
         for _, estrela in pairs(EspacoEstelar:GetChildren()) do
             if estrela:IsA("TextLabel") then
-                -- Move a estrela um pouquinho para a esquerda
                 estrela.Position = UDim2.new(estrela.Position.X.Scale - 0.002, 0, estrela.Position.Y.Scale, 0)
-                -- Se a estrela sumir da tela à esquerda, volta ela pra direita
                 if estrela.Position.X.Scale < -0.05 then
                     estrela.Position = UDim2.new(1.05, 0, random:NextNumber(0, 1), 0)
                 end
@@ -76,9 +70,9 @@ TextoBolha.Text = "BK SCRIPTS 🩸"
 TextoBolha.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextoBolha.Font = Enum.Font.GothamBold
 TextoBolha.TextSize = 13
-TextoBolha.ZIndex = 3 -- Garante que o texto fica por cima das estrelas
+TextoBolha.ZIndex = 3
 
--- 4. LOGICA DE ARRASTAR A BOLHA NO CELULAR (Mobile Dragging)
+-- 4. LOGICA DE ARRASTAR A BOLHA NO CELULAR
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
@@ -113,42 +107,39 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 
--- 5. PAINEL PRINCIPAL (O MENU - Começa invisível/escondido)
+-- 5. PAINEL PRINCIPAL (Quadrado, Limpo, Sem Destaque Vermelho Poluído)
 local MainFrame = Instance.new("Frame", UI_Main)
 MainFrame.Name = "BK_MenuPrincipal"
-MainFrame.Size = UDim2.new(0, 0, 0, 0) -- Começa zerado para a animação de clique
+MainFrame.Size = UDim2.new(0, 0, 0, 0)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
-MainFrame.BorderSizePixel = 2
-MainFrame.BorderColor3 = Color3.fromRGB(255, 0, 50)
+MainFrame.BorderSizePixel = 1
+MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0) -- Borda invisível/preta para visual "clean"
 MainFrame.ClipsDescendants = true
 MainFrame.Visible = false
 
--- Texto indicativo provisório dentro do menu principal
+-- Conteúdo provisório interno
 local TextoProvisorio = Instance.new("TextLabel", MainFrame)
 TextoProvisorio.Size = UDim2.new(1, 0, 1, 0)
 TextoProvisorio.BackgroundTransparency = 1
-TextoProvisorio.Text = "BK CLIENT\n\n[Próximo passo: Criar o Painel e as Abas aqui dentro]"
+TextoProvisorio.Text = "BK CLIENT\n\n[Design Limpo Pronto! Próximo passo: Abas de FPS]"
 TextoProvisorio.TextColor3 = Color3.fromRGB(150, 150, 150)
 TextoProvisorio.Font = Enum.Font.Gotham
 TextoProvisorio.TextSize = 14
 
 
--- 6. LOGICA DE CLIQUE (Abrir/Fechar o Menu ao clicar na Bolha)
+-- 6. LOGICA DE ABRIR/FECHAR O PAINEL
 local MenuAberto = false
 
 Bolha.InputEnded:Connect(function(input)
-    -- Verifica se foi um clique/toque rápido (e não um arrasto pesado)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        if dragging == false then -- Se não estava arrastando, abre o menu
+        if dragging == false then
             if not MenuAberto then
-                -- Abre o Painel com animação bonita se expandindo a partir do centro
                 MainFrame.Visible = true
                 MainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
                 TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 250)}):Play()
                 MenuAberto = true
             else
-                -- Fecha o Painel encolhendo ele
                 local fechar = TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
                 fechar:Play()
                 fechar.Completed:Connect(function()
@@ -160,4 +151,4 @@ Bolha.InputEnded:Connect(function(input)
     end
 end)
 
-print("BK SCRIPTS 🩸: Módulo UI com fundo estelar carregado com sucesso!")
+print("BK SCRIPTS 🩸: Módulo UI Clean atualizado com sucesso!")
