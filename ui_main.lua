@@ -20,84 +20,22 @@ local function _0xSND(_0xID)
     game:GetService("Debris"):AddItem(s, 1)
 end
 
-local function _0xNOT(_0xTX1, _0xTX2)
-    local nF = Instance.new("Frame", _0xFI6)
-    nF.Size = UDim2.new(0, 220, 0, 50)
-    nF.Position = UDim2.new(1, 30, 0, 20)
-    nF.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-    nF.BorderSizePixel = 1
-    nF.BorderColor3 = Color3.fromRGB(35, 35, 40)
-    
-    local t1 = Instance.new("TextLabel", nF)
-    t1.Size = UDim2.new(1, -20, 0, 20)
-    t1.Position = UDim2.new(0, 10, 0, 5)
-    t1.Text = _0xTX1
-    t1.TextColor3 = Color3.fromRGB(255, 255, 255)
-    t1.Font = Enum.Font.GothamBold
-    t1.TextSize = 12
-    t1.TextXAlignment = Enum.TextXAlignment.Left
-    t1.BackgroundTransparency = 1
-    
-    local t2 = Instance.new("TextLabel", nF)
-    t2.Size = UDim2.new(1, -20, 0, 20)
-    t2.Position = UDim2.new(0, 10, 0, 22)
-    t2.Text = _0xTX2
-    t2.TextColor3 = Color3.fromRGB(150, 150, 150)
-    t2.Font = Enum.Font.Gotham
-    t2.TextSize = 11
-    t2.TextXAlignment = Enum.TextXAlignment.Left
-    t2.BackgroundTransparency = 1
-
-    _0xAE1:Create(nF, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(1, -240, 0, 20)}):Play()
-    _0xSND(6518427327)
-    
-    task.delay(3, function()
-        local go = _0xAE1:Create(nF, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(1, 30, 0, 20)})
-        go:Play()
-        go.Completed:Connect(function() nF:Destroy() end)
-    end)
-end
-
-local _0xG7 = Instance.new("ImageButton", _0xFI6)
-_0xG7.Name = "BK_Bolha"
+-- CONTÊNER DA BOLHA
+local _0xG7 = Instance.new("Frame", _0xFI6)
+_0xG7.Name = "BK_BolhaContainer"
 _0xG7.Size = UDim2.new(0, 130, 0, 36)
 _0xG7.Position = UDim2.new(0.1, 0, 0.2, 0)
 _0xG7.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
 _0xG7.BorderSizePixel = 1
 _0xG7.BorderColor3 = Color3.fromRGB(40, 40, 45)
-_0xG7.ClipsDescendants = true
 _0xG7.Active = true
-_0xG7.AutoButtonColor = false
 
-local _0xH8 = Instance.new("Frame", _0xG7)
-_0xH8.Size = UDim2.new(1, 0, 1, 0)
-_0xH8.BackgroundTransparency = 1
-
-local _0xRND = Random.new()
-for i = 1, 10 do
-    local st = Instance.new("TextLabel", _0xH8)
-    st.Text = "."
-    st.Font = Enum.Font.GothamBold
-    st.TextSize = _0xRND:NextInteger(8, 12)
-    st.TextColor3 = Color3.fromRGB(255, 255, 255)
-    st.BackgroundTransparency = 1
-    st.Position = UDim2.new(_0xRND:NextNumber(0, 1), 0, _0xRND:NextNumber(0, 1), 0)
-    st.TextTransparency = _0xRND:NextNumber(0.5, 0.8)
-end
-
-task.spawn(function()
-    while task.wait(0.03) do
-        if not _0xH8 or not _0xH8.Parent then break end
-        for _, v in pairs(_0xH8:GetChildren()) do
-            if v:IsA("TextLabel") then
-                v.Position = UDim2.new(v.Position.X.Scale - 0.003, 0, v.Position.Y.Scale, 0)
-                if v.Position.X.Scale < -0.05 then
-                    v.Position = UDim2.new(1.05, 0, _0xRND:NextNumber(0, 1), 0)
-                end
-            end
-        end
-    end
-end)
+-- BOTÃO INVISÍVEL COBRE 100% DA BOLHA (Garante clique imediato no Delta)
+local _0xCLK = Instance.new("TextButton", _0xG7)
+_0xCLK.Size = UDim2.new(1, 0, 1, 0)
+_0xCLK.BackgroundTransparency = 1
+_0xCLK.Text = ""
+_0xCLK.ZIndex = 10
 
 local _0xI9 = Instance.new("TextLabel", _0xG7)
 _0xI9.Size = UDim2.new(1, 0, 1, 0)
@@ -108,33 +46,30 @@ _0xI9.Font = Enum.Font.GothamBold
 _0xI9.TextSize = 11
 _0xI9.ZIndex = 5
 
-local _dr, _di, _ds, _sp
-local _mv = false
-
+-- SISTEMA DE ARRASTO REFORMULADO (Não interfere mais no botão)
+local _dr, _ds, _sp
 _0xG7.InputBegan:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-        _dr = true _ds = i.Position _sp = _0xG7.Position _mv = false
+        _dr = true _ds = i.Position _sp = _0xG7.Position
     end
 end)
-
 _0xCG3.InputChanged:Connect(function(i)
     if _dr and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
         local d = i.Position - _ds
-        if d.Magnitude > 10 then _mv = true end
         _0xG7.Position = UDim2.new(_sp.X.Scale, _sp.X.Offset + d.X, _sp.Y.Scale, _sp.Y.Offset + d.Y)
     end
 end)
-
 _0xCG3.InputEnded:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
         _dr = false
     end
 end)
 
+-- PAINEL PRINCIPAL
 local _0xJA10 = Instance.new("Frame", _0xFI6)
 _0xJA10.Name = "BK_MenuPrincipal"
-_0xJA10.Size = UDim2.new(0, 0, 0, 0)
-_0xJA10.Position = UDim2.new(0.5, 0, 0.5, 0)
+_0xJA10.Size = UDim2.new(0, 390, 0, 230)
+_0xJA10.Position = UDim2.new(0.5, -195, 0.5, -115)
 _0xJA10.BackgroundColor3 = Color3.fromRGB(11, 11, 13)
 _0xJA10.BorderSizePixel = 1
 _0xJA10.BorderColor3 = Color3.fromRGB(22, 22, 25)
@@ -215,7 +150,7 @@ _0xSJ19.Position = UDim2.new(0, 0, 0, 54)
 _0xSJ19.BackgroundColor3 = Color3.fromRGB(13, 13, 15)
 _0xSJ19.BorderSizePixel = 1
 _0xSJ19.BorderColor3 = Color3.fromRGB(22, 22, 25)
-_0xSJ19.Text = " Validade da Key: 7 Dias Restantes"
+_0xSJ19.Text = " Validade da Key: 7 Days Restantes"
 _0xSJ19.TextColor3 = Color3.fromRGB(0, 235, 90)
 _0xSJ19.Font = Enum.Font.Gotham
 _0xSJ19.TextSize = 11
@@ -246,22 +181,21 @@ _0xTK20.MouseButton1Click:Connect(function()
     _0xQH17.Visible = true
 end)
 
+-- GATILHO DIRETO E LIMPO (Sem travas de movimento)
 local _op = false
-_0xG7.Activated:Connect(function()
-    if not _mv then
-        _0xSND(12221967)
-        _op = not _op
-        if _op then
-            _0xJA10.Visible = true
-            _0xJA10.Size = UDim2.new(0, 0, 0, 0)
-            _0xJA10.Position = UDim2.new(0.5, 0, 0.5, 0)
-            _0xAE1:Create(_0xJA10, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 390, 0, 230), Position = UDim2.new(0.5, -195, 0.5, -115)}):Play()
-        else
-            local c = _0xAE1:Create(_0xJA10, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
-            c:Play()
-            c.Completed:Connect(function() _0xJA10.Visible = false end)
-        end
+_0xCLK.MouseButton1Click:Connect(function()
+    _0xSND(12221967)
+    _op = not _op
+    if _op then
+        _0xJA10.Visible = true
+        _0xJA10.Size = UDim2.new(0, 0, 0, 0)
+        _0xJA10.Position = UDim2.new(0.5, 0, 0.5, 0)
+        _0xAE1:Create(_0xJA10, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 390, 0, 230), Position = UDim2.new(0.5, -195, 0.5, -115)}):Play()
+    else
+        local c = _0xAE1:Create(_0xJA10, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
+        c:Play()
+        c.Completed:Connect(function() _0xJA10.Visible = false end)
     end
 end)
 
-_0xNOT("BK CLIENT", "Módulo Premium Inicializado!")
+print("BK ENGINE: Ativado com Sucesso.")
