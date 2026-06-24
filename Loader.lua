@@ -1,27 +1,26 @@
+--====================================================================
+-- 🩸 BK SCRIPTS - LOADER DIRETO (SEM PASTAS) 🩸
+--====================================================================
 
-local GITHUB_USERNAME = "diogogg609-wq" 
-local REPO_NAME = "BK-SCRIPTS-"          
-local BRANCH = "main"                   
+-- Links diretos para os arquivos soltos no seu repositório
+local URL_OTIMIZACAO = "https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/Optimization.lua"
+local URL_INTERFACE  = "https://raw.githubusercontent.com/diogogg609-wq/BK-SCRIPTS-/main/Library.lua"
 
-local BaseUrl = "https://raw.githubusercontent.com/" .. GITHUB_USERNAME .. "/" .. REPO_NAME .. "/" .. BRANCH .. "/"
+print("[BK SCRIPTS] Carregando arquivos diretos do repositório...")
 
-print("[BK SCRIPTS] Inicializando sistema de segurança e carregamento móvel...")
-
-
-local function SafeLoad(path)
-    local url = BaseUrl .. path
+local function BaixarCodigo(url)
     local success, content = pcall(function()
         return game:HttpGet(url)
     end)
     
     if not success or not content or content == "404: Not Found" then
-        warn("[BK SCRIPTS ERROR] Falha ao ler arquivo do GitHub: " .. path)
+        warn("[BK SCRIPTS] Arquivo não encontrado: " .. url)
         return nil
     end
     
     local func, err = loadstring(content)
     if not func then
-        warn("[BK SCRIPTS ERROR] Erro de sintaxe no módulo " .. path .. " -> " .. tostring(err))
+        warn("[BK SCRIPTS] Erro no código: " .. tostring(err))
         return nil
     end
     
@@ -29,11 +28,12 @@ local function SafeLoad(path)
 end
 
 task.spawn(function()
-        
-    local Optimization = SafeLoad("Modules/Optimization.lua")
+    -- Carrega a Otimização
+    local Optimization = BaixarCodigo(URL_OTIMIZACAO)
     if not Optimization then return end
     
-    local UI_Library = SafeLoad("UI_UX/Library.lua")
+    -- Carrega a Interface e abre o menu
+    local UI_Library = BaixarCodigo(URL_INTERFACE)
     if not UI_Library then return end
     
     UI_Library:Initialize(Optimization)
